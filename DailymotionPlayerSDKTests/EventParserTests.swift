@@ -1,62 +1,56 @@
 //
-//  DailymotionPlayerSDKTests.swift
-//  DailymotionPlayerSDKTests
-//
-//  Created by Romain BIARD on 29/11/2016.
 //  Copyright © 2016 Dailymotion. All rights reserved.
 //
 
 import XCTest
 @testable import DailymotionPlayerSDK
 
-class EventParserTests: XCTestCase {
+final class EventParserTests: XCTestCase {
+  
+  private func parseEvent(from string: String) -> PlayerEvent {
+    return EventParser.parseEvent(from: string)!
+  }
     
-    func testParseEventNamedEventOK() {
-        guard let event =  EventParser.parseEvent(from: "event=controlschange&controls=true") else {
-            assertionFailure()
-            return
-        }
-        switch event {
-        case .namedEvent(let name):
-            assert(name == "controlschange")
-        default:
-            assertionFailure()
-        }
+  func testParseEventNamedEventOK() {
+    let event = parseEvent(from: "event=controlschange&controls=true")
+    
+    switch event {
+    case .namedEvent(let name):
+      XCTAssertEqual(name, "controlschange")
+    default:
+      assertionFailure()
     }
+  }
+  
+  func testParseEventTimeEventOK() {
+    let event = parseEvent(from: "event=progress&time=19.28")
     
-    func testParseEventTimeEventOK() {
-        guard let event =  EventParser.parseEvent(from: "event=progress&time=19.28") else {
-            assertionFailure()
-            return
-        }
-        switch event {
-        case .timeEvent(let time,let name):
-            assert(name == "progress")
-            assert(time == 19.28)
-        default:
-            assertionFailure()
-        }
+    switch event {
+    case .timeEvent(let name, let time):
+      XCTAssertEqual(name, "progress")
+      XCTAssertEqual(time, 19.28)
+    default:
+      assertionFailure()
     }
-    
-    func testParseEventNamedEventKO() {
-        if let _ =  EventParser.parseEvent(from: "event3=controlschange&controls=true") {
-            assertionFailure()
-        } else {
-            assert(true)
-        }
+  }
+  
+  func testParseEventNamedEventKO() {
+    if let _ = EventParser.parseEvent(from: "event3=controlschange&controls=true") {
+      assertionFailure()
+    } else {
+      assert(true)
     }
+  }
+  
+  func testParseEventTimeEventKO() {
+    let event = parseEvent(from: "event=progress&time3=19.28")
     
-    func testParseEventTimeEventKO() {
-        guard let event =  EventParser.parseEvent(from: "event=progress&time3=19.28") else {
-            assertionFailure()
-            return
-        }
-        switch event {
-        case .timeEvent:
-            assertionFailure()
-        default:
-            break
-        }
+    switch event {
+    case .timeEvent:
+      assertionFailure()
+    default:
+      break
     }
-    
+  }
+  
 }

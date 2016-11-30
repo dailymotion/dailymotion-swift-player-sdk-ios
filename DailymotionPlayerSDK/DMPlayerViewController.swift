@@ -14,7 +14,7 @@ public protocol DMPlayerViewControllerDelegate: class {
 
 public enum PlayerEvent {
   
-  case timeEvent(time: Double,name : String)
+  case timeEvent(name: String, time: Double)
   case namedEvent(name : String)
   
 }
@@ -39,12 +39,9 @@ open class DMPlayerViewController: UIViewController {
     }
   }
   
-  fileprivate(set) var duration: Double = 0
-  fileprivate(set) var currentTime: Double = 0
-  
   private var webView: WKWebView!
 
-  override open var shouldAutorotate : Bool {
+  override open var shouldAutorotate: Bool {
     return true
   }
   
@@ -56,6 +53,11 @@ open class DMPlayerViewController: UIViewController {
     webView = nil
   }
 
+  /// Load a video with ID and optional OAuth token
+  ///
+  /// - Parameter videoId:        The video's XID
+  /// - Parameter accessToken:    An optional oauth token. If provided it will be passed as Bearer token to the player.
+  /// - Parameter withParameters: The dictionary of configuration parameters that are passed to the player.
   public func load(videoId: String, accessToken: String? = nil, withParameters parameters: [String: Any]) {
     assert(baseUrl != nil)
 
@@ -74,7 +76,7 @@ open class DMPlayerViewController: UIViewController {
     return request
   }
   
-  fileprivate func newWebView(frame: CGRect) -> WKWebView {
+  private func newWebView(frame: CGRect) -> WKWebView {
     let webView = WKWebView(frame: frame, configuration: newConfiguration())
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     webView.backgroundColor = .clear
@@ -83,7 +85,7 @@ open class DMPlayerViewController: UIViewController {
     return webView
   }
   
-  fileprivate func newConfiguration() -> WKWebViewConfiguration {
+  private func newConfiguration() -> WKWebViewConfiguration {
     let configuration = WKWebViewConfiguration()
     configuration.allowsInlineMediaPlayback = true
     if #available(iOS 9.0, *) {
@@ -98,13 +100,13 @@ open class DMPlayerViewController: UIViewController {
     return configuration
   }
   
-  fileprivate func newPreferences() -> WKPreferences {
+  private func newPreferences() -> WKPreferences {
     let preferences = WKPreferences()
     preferences.javaScriptCanOpenWindowsAutomatically = true
     return preferences
   }
   
-  fileprivate func newContentController() -> WKUserContentController {
+  private func newContentController() -> WKUserContentController {
     let controller = WKUserContentController()
     var source = "window.dmpNativeBridge = {"
     source += "triggerEvent: function(data) {"
