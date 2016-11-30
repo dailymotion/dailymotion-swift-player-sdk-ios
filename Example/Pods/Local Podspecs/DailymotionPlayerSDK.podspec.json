@@ -1,0 +1,20 @@
+{
+  "name": "DailymotionPlayerSDK",
+  "version": "3.0.1",
+  "summary": "The Dailymotion iOS player (Swift)",
+  "homepage": "https://github.com/dailymotion/dailymotion-swift-player-sdk-ios",
+  "authors": "Dailymotion",
+  "license": "MIT",
+  "source": {
+    "git": "https://github.com/dailymotion/dailymotion-swift-player-sdk-ios",
+    "tag": "3.0.1"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "DailymotionPlayerSDK/*.swift",
+  "frameworks": [
+    "UIKit",
+    "WebKit"
+  ]
+}

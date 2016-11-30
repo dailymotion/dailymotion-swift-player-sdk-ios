@@ -1,0 +1,6 @@
+framework module DailymotionPlayerSDK {
+  umbrella header "DailymotionPlayerSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

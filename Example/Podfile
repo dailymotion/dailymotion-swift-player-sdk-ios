@@ -1,0 +1,6 @@
+target 'Player Example' do
+  use_frameworks!
+
+  pod 'DailymotionPlayerSDK', :path => '../'
+
+end
