@@ -134,7 +134,7 @@ open class DMPlayerViewController: UIViewController {
     return url
   }
 
-  func toggleControls(show: Bool) {
+  public func toggleControls(show: Bool) {
     let hasControls = show ? "1" : "0"
     notifyPlayerApi(method: "controls", argument: hasControls)
   }
@@ -144,19 +144,19 @@ open class DMPlayerViewController: UIViewController {
     webView?.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
   }
   
-  func toggleFullscreen() {
+  public func toggleFullscreen() {
     notifyPlayerApi(method: "notifyFullscreenChanged")
   }
 
-  func play() {
+  public func play() {
     notifyPlayerApi(method: "play")
   }
   
-  func pause() {
+  public func pause() {
     notifyPlayerApi(method: "pause")
   }
   
-  func seek(to: TimeInterval) {
+  public func seek(to: TimeInterval) {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
 
