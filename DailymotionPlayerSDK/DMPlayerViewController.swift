@@ -27,10 +27,10 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let pathPrefix = "/embed/video/"
   private static let messageHandlerEvent = "triggerEvent"
   
-  weak var delegate: DMPlayerViewControllerDelegate?
+  public weak var delegate: DMPlayerViewControllerDelegate?
   
   var _baseUrl: URL!
-  var baseUrl: URL! {
+  public var baseUrl: URL! {
     get {
       return _baseUrl ?? DMPlayerViewController.defaultUrl
     }
