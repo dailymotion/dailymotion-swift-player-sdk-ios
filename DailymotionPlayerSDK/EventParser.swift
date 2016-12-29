@@ -10,14 +10,13 @@ final class EventParser {
     let message = String(describing: from)
     let eventAndTime = parseEventAndTime(from: message)
     let time = parseTime(from: eventAndTime)
-    guard let event = eventAndTime["event"] else {
-      return nil
-    }
+
+    guard let event = eventAndTime["event"] else { return nil }
     
     switch (event , time) {
-    case (let event, let time) where time != nil:
-      return .timeEvent(name: event, time: time!)
-    case (let event, _):
+    case (let event, .some(let time)):
+      return .timeEvent(name: event, time: time)
+    case (let event, .none):
       return .namedEvent(name: event)
     }
   }
