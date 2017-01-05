@@ -7,8 +7,8 @@ import XCTest
 
 final class EventParserTests: XCTestCase {
   
-  private func parseEvent(from string: String) -> PlayerEvent? {
-    return EventParser.parseEvent(from: string)
+  private func parseEvent(from: Any) -> PlayerEvent? {
+    return EventParser.parseEvent(from: from)
   }
     
   func testParseEventNamedEventOK() {
@@ -55,6 +55,12 @@ final class EventParserTests: XCTestCase {
   
   func testParseGarbageOK() {
     let event = parseEvent(from: "foo=bar&baz=bat")
+    
+    XCTAssertNil(event)
+  }
+  
+  func testParseInvalidOK() {
+    let event = parseEvent(from: ["foo": "bar"])
     
     XCTAssertNil(event)
   }

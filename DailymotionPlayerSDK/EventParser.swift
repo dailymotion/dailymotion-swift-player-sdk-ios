@@ -7,13 +7,13 @@ import Foundation
 final class EventParser {
 
   static func parseEvent(from: Any) -> PlayerEvent? {
-    let message = String(describing: from)
+    guard let message = from as? String else { return nil }
     let eventAndTime = parseEventAndTime(from: message)
     let time = parseTime(from: eventAndTime)
 
     guard let event = eventAndTime["event"] else { return nil }
     
-    switch (event , time) {
+    switch (event, time) {
     case (let event, .some(let time)):
       return .timeEvent(name: event, time: time)
     case (let event, .none):
