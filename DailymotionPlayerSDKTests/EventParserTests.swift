@@ -7,12 +7,12 @@ import XCTest
 
 final class EventParserTests: XCTestCase {
   
-  private func parseEvent(from string: String) -> PlayerEvent {
-    return EventParser.parseEvent(from: string)!
+  private func parseEvent(from string: String) -> PlayerEvent? {
+    return EventParser.parseEvent(from: string)
   }
     
   func testParseEventNamedEventOK() {
-    let event = parseEvent(from: "event=controlschange&controls=true")
+    let event = parseEvent(from: "event=controlschange&controls=true")!
     
     switch event {
     case .namedEvent(let name):
@@ -23,7 +23,7 @@ final class EventParserTests: XCTestCase {
   }
   
   func testParseEventTimeEventOK() {
-    let event = parseEvent(from: "event=progress&time=19.28")
+    let event = parseEvent(from: "event=progress&time=19.28")!
     
     switch event {
     case .timeEvent(let name, let time):
@@ -43,7 +43,7 @@ final class EventParserTests: XCTestCase {
   }
   
   func testParseEventTimeEventKO() {
-    let event = parseEvent(from: "event=progress&time3=19.28")
+    let event = parseEvent(from: "event=progress&time3=19.28")!
     
     switch event {
     case .timeEvent:
@@ -51,6 +51,12 @@ final class EventParserTests: XCTestCase {
     default:
       break
     }
+  }
+  
+  func testParseGarbageOK() {
+    let event = parseEvent(from: "foo=bar&baz=bat")
+    
+    XCTAssertNil(event)
   }
   
 }
