@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		582D522DB3420A8043F4828F /* Pods_Player_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */; };
+		9469C7DF1E22694600F4D389 /* UIView+DMAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */; };
 		946C6D7F1DEF19B20007A994 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C6D7E1DEF19B20007A994 /* AppDelegate.swift */; };
 		946C6D811DEF19B20007A994 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C6D801DEF19B20007A994 /* ViewController.swift */; };
 		946C6D841DEF19B20007A994 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 946C6D821DEF19B20007A994 /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 		0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Player_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A1C68F7EF4F5ACA3E62FC0D /* Pods-Player Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.debug.xcconfig"; sourceTree = "<group>"; };
 		1C1F1012B3D98FFFB1AAE7E2 /* Pods-Player Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.release.xcconfig"; sourceTree = "<group>"; };
+		9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+DMAdditions.swift"; sourceTree = "<group>"; };
 		946C6D7B1DEF19B20007A994 /* Player Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Player Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		946C6D7E1DEF19B20007A994 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		946C6D801DEF19B20007A994 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			children = (
 				946C6D7E1DEF19B20007A994 /* AppDelegate.swift */,
 				946C6D801DEF19B20007A994 /* ViewController.swift */,
+				9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */,
 				946C6D821DEF19B20007A994 /* Main.storyboard */,
 				946C6D851DEF19B20007A994 /* Assets.xcassets */,
 				946C6D871DEF19B20007A994 /* LaunchScreen.storyboard */,
@@ -214,6 +217,7 @@
 			files = (
 				946C6D811DEF19B20007A994 /* ViewController.swift in Sources */,
 				946C6D7F1DEF19B20007A994 /* AppDelegate.swift in Sources */,
+				9469C7DF1E22694600F4D389 /* UIView+DMAdditions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
