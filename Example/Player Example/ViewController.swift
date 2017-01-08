@@ -63,10 +63,13 @@ extension ViewController: DMPlayerViewControllerDelegate {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
     switch event {
-    case .namedEvent(let name) where name == "fullscreen_toggle_requested":
-      toggleFullScreen()
-    case .namedEvent(let name) where name == "apiready":
+    case .namedEvent(let name, _) where name == "apiready":
       playerViewController.play()
+    case .namedEvent(let name, _) where name == "fullscreen_toggle_requested":
+      toggleFullScreen()
+    case .namedEvent(let name, .some(let data)) where name == "share_requested":
+      guard let raw = data["shortUrl"] ?? data["url"], let url = URL(string: raw) else { return }
+      share(url: url)
     default:
       break
     }
@@ -89,6 +92,14 @@ extension ViewController: DMPlayerViewControllerDelegate {
     } else {
       playerHeightConstraint.constant = initialPlayerHeight
     }
+  }
+  
+  private func share(url: URL) {
+    playerViewController.pause()
+    let item = ShareActivityItemProvider(title: "Dailymotion", url: url)
+    let shareViewController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+    shareViewController.excludedActivityTypes = [.assignToContact, .print]
+    present(shareViewController, animated: true, completion: nil)
   }
   
   func player(_ player: DMPlayerViewController, openUrl url: URL) {

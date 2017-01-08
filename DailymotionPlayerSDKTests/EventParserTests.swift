@@ -12,10 +12,10 @@ final class EventParserTests: XCTestCase {
   }
     
   func testParseEventNamedEventOK() {
-    let event = parseEvent(from: "event=controlschange&controls=true")!
+    let event = parseEvent(from: "event=controlschange")!
     
     switch event {
-    case .namedEvent(let name):
+    case .namedEvent(let name, _):
       XCTAssertEqual(name, "controlschange")
     default:
       assertionFailure()
@@ -50,6 +50,20 @@ final class EventParserTests: XCTestCase {
       assertionFailure()
     default:
       break
+    }
+  }
+  
+  func testParseAdditionalEventData() {
+    let event = parseEvent(from: "event=share_requested&url=https%3A%2F%2Fwww.dailymotion.com%2Fvideo%2Fx4r5udv_midnight-sun-iceland_travel&shortUrl=https%3A%2F%2Fdai.ly%2Fx4r5udv")!
+    
+    switch event {
+    case .namedEvent(let name, let data):
+      XCTAssertEqual(name, "share_requested")
+      XCTAssertNotNil(data)
+      XCTAssertEqual(data?["url"], "https://www.dailymotion.com/video/x4r5udv_midnight-sun-iceland_travel")
+      XCTAssertEqual(data?["shortUrl"], "https://dai.ly/x4r5udv")
+    default:
+      assertionFailure()
     }
   }
   

@@ -70,7 +70,7 @@ extension VideoViewController: DMPlayerViewControllerDelegate {
   // The delegate has 2 mandatory functions
 
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
-    // Sends player events of either .namedEvent(name: String) or .timeEvent(name: String, time: Double)
+    // Sends player events of either .namedEvent(name: String, data: [String: String]?) or .timeEvent(name: String, time: Double)
   }
 
   func player(_ player: DMPlayerViewController, openUrl url: URL) {
@@ -105,7 +105,7 @@ To handle events sent by the player, let's implement the event delegate method m
 ```swift
 func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
   switch event {
-    case .namedEvent(let name) where name == "fullscreen_toggle_requested":
+    case .namedEvent(let name, _) where name == "fullscreen_toggle_requested":
       toggleFullScreen()
     default:
       break
@@ -113,7 +113,7 @@ func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent
 }
 
 private func toggleFullScreen() {
-  // Keep track of the orientation via a isPlayerFullscreen bool
+  // Keep track of the orientation via an isPlayerFullscreen bool
   isPlayerFullscreen = !isPlayerFullscreen
   updateDeviceOrientation()
   updatePlayerSize()
@@ -121,7 +121,7 @@ private func toggleFullScreen() {
 
 private func updateDeviceOrientation() {
   let orientation: UIDeviceOrientation = isPlayerFullscreen ? .landscapeLeft : .portrait
-    UIDevice.current.setValue(orientation.rawValue, forKey: #keyPath(UIDevice.orientation))
+  UIDevice.current.setValue(orientation.rawValue, forKey: #keyPath(UIDevice.orientation))
 }
 
 private func updatePlayerSize() {
