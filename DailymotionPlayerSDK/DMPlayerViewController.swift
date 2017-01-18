@@ -139,7 +139,7 @@ open class DMPlayerViewController: UIViewController {
     notifyPlayerApi(method: "controls", argument: hasControls)
   }
   
-  final func notifyPlayerApi(method: String, argument: String? = nil) {
+  final public func notifyPlayerApi(method: String, argument: String? = nil) {
     let playerArgument = argument != nil ? argument! : "null"
     webView?.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
   }
