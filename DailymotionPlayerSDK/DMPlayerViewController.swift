@@ -39,7 +39,14 @@ open class DMPlayerViewController: UIViewController {
     }
   }
   
-  private var webView: WKWebView!
+  private lazy var webView: WKWebView = {
+    let webView = WKWebView(frame: .zero, configuration: self.newConfiguration())
+    webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    webView.backgroundColor = .clear
+    webView.isOpaque = false
+    webView.scrollView.isScrollEnabled = false
+    return webView
+  }()
 
   override open var shouldAutorotate: Bool {
     return true
@@ -47,10 +54,8 @@ open class DMPlayerViewController: UIViewController {
   
   deinit {
     pause()
-    webView?.stopLoading()
-    webView?.configuration.userContentController
-      .removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
-    webView = nil
+    webView.stopLoading()
+    webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
   }
 
   /// Load a video with ID and optional OAuth token
@@ -61,7 +66,6 @@ open class DMPlayerViewController: UIViewController {
   public func load(videoId: String, accessToken: String? = nil, withParameters parameters: [String: Any]) {
     assert(baseUrl != nil)
 
-    webView = newWebView(frame: .zero)
     view = webView
 
     let request = newRequest(forVideoId: videoId, accessToken: accessToken, parameters: parameters)
@@ -74,15 +78,6 @@ open class DMPlayerViewController: UIViewController {
       request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
     }
     return request
-  }
-  
-  private func newWebView(frame: CGRect) -> WKWebView {
-    let webView = WKWebView(frame: frame, configuration: newConfiguration())
-    webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    webView.backgroundColor = .clear
-    webView.isOpaque = false
-    webView.scrollView.isScrollEnabled = false
-    return webView
   }
   
   private func newConfiguration() -> WKWebViewConfiguration {
@@ -114,6 +109,8 @@ open class DMPlayerViewController: UIViewController {
     source += "}}"
     controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     controller.add(Trampoline(delegate: self), name: DMPlayerViewController.messageHandlerEvent)
+    let load = "player.load(nil, {});\n"
+    controller.addUserScript(WKUserScript(source: load, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
     return controller
   }
   
@@ -141,7 +138,7 @@ open class DMPlayerViewController: UIViewController {
   
   final public func notifyPlayerApi(method: String, argument: String? = nil) {
     let playerArgument = argument != nil ? argument! : "null"
-    webView?.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
+    webView.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
   }
   
   public func toggleFullscreen() {
