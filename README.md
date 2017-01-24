@@ -36,7 +36,13 @@ class VideoViewController: UIViewController {
   @IBOutlet private var containerView: UIView!
 
   private lazy var playerViewController: DMPlayerViewController = {
-    let controller = DMPlayerViewController()
+    // If you have an OAuth token, you can pass it to the player to hook up
+    // a user's view history.
+    let parameters: [String: Any] = [
+      "fullscreen-action": "trigger_event", // Trigger an event when the users toggles full screen mode in the player
+      "sharing-action": "trigger_event" // Trigger an event to share the video to e.g. show a UIActivityViewController
+    ]
+    let controller = DMPlayerViewController(parameters: parameters)
     controller.delegate = self
     return controller
   }()
@@ -83,18 +89,11 @@ extension VideoViewController: DMPlayerViewControllerDelegate {
 
 For a full list of events, see the [player API events page](https://developer.dailymotion.com/player#player-api-events)
 
-To playback a video, call the player's `load` method with the video's id and an optional token and parameters:
+To playback a video, call the player's `load` method with the video's id:
 
 ```swift
 func loadVideo(withId id: String) {
-  let parameters: [String: Any] = [
-    "fullscreen-action": "trigger_event", // Trigger an event when the users toggles full screen mode in the player
-    "sharing-action": "trigger_event" // Trigger an event to share the video to e.g. show a UIActivityViewController
-  ]
-  // If you have an OAuth token, you can pass it to the player to hook up
-  // a user's view history. 
-  playerViewController.load(videoId: id, accessToken: nil, withParameters: parameters)
-  // Without a token, you can also simply call load(videoId:withParameters:)
+  playerViewController.load(videoId: id)
 }
 ```
 

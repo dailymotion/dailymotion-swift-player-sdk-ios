@@ -17,7 +17,12 @@ class ViewController: UIViewController {
   fileprivate var isPlayerFullscreen = false
   
   fileprivate lazy var playerViewController: DMPlayerViewController = {
-    let controller = DMPlayerViewController()
+    let parameters: [String: Any] = [
+      "fullscreen-action": "trigger_event",
+      "sharing-action": "trigger_event"
+    ]
+    
+    let controller = DMPlayerViewController(parameters: parameters)
     controller.delegate = self
     return controller
   }()
@@ -50,11 +55,7 @@ class ViewController: UIViewController {
   }
   
   @IBAction private func play(_ sender: Any) {
-    let parameters: [String: Any] = [
-      "fullscreen-action": "trigger_event",
-      "sharing-action": "trigger_event"
-    ]
-    playerViewController.load(videoId: "x4r5udv", withParameters: parameters)
+    playerViewController.load(videoId: "x4r5udv")
   }
 
 }

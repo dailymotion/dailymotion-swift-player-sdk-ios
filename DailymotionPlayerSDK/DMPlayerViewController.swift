@@ -24,7 +24,7 @@ open class DMPlayerViewController: UIViewController {
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
   fileprivate static let version = "2.9.3"
   fileprivate static let eventName = "dmevent"
-  fileprivate static let pathPrefix = "/embed/video/"
+  fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
   
   public weak var delegate: DMPlayerViewControllerDelegate?
@@ -52,6 +52,20 @@ open class DMPlayerViewController: UIViewController {
     return true
   }
   
+  /// Initialize a new instance of the player
+  /// - Parameter parameters:   The dictionary of configuration parameters that are passed to the player.
+  /// - Parameter accessToken:  An optional oauth token. If provided it will be passed as Bearer token to the player.
+  public init(parameters: [String: Any], accessToken: String? = nil) {
+    super.init(nibName: nil, bundle: nil)
+    view = webView
+    let request = newRequest(accessToken: accessToken, parameters: parameters)
+    webView.load(request)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
   deinit {
     pause()
     webView.stopLoading()
@@ -60,20 +74,15 @@ open class DMPlayerViewController: UIViewController {
 
   /// Load a video with ID and optional OAuth token
   ///
-  /// - Parameter videoId:        The video's XID
-  /// - Parameter accessToken:    An optional oauth token. If provided it will be passed as Bearer token to the player.
-  /// - Parameter withParameters: The dictionary of configuration parameters that are passed to the player.
-  public func load(videoId: String, accessToken: String? = nil, withParameters parameters: [String: Any]) {
+  /// - Parameter videoId: The video's XID
+  public func load(videoId: String) {
     assert(baseUrl != nil)
-
-    view = webView
-
-    let request = newRequest(forVideoId: videoId, accessToken: accessToken, parameters: parameters)
-    webView.load(request)
+    
+    webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
   }
   
-  private func newRequest(forVideoId videoId: String, accessToken: String?, parameters: [String: Any]) -> URLRequest {
-    var request = URLRequest(url: url(forVideoId: videoId, parameters: parameters))
+  private func newRequest(accessToken: String?, parameters: [String: Any]) -> URLRequest {
+    var request = URLRequest(url: url(parameters: parameters))
     if let accessToken = accessToken {
       request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
     }
@@ -109,14 +118,12 @@ open class DMPlayerViewController: UIViewController {
     source += "}}"
     controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     controller.add(Trampoline(delegate: self), name: DMPlayerViewController.messageHandlerEvent)
-    let load = "player.load(nil, {});\n"
-    controller.addUserScript(WKUserScript(source: load, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
     return controller
   }
   
-  private func url(forVideoId videoId: String, parameters: [String: Any]) -> URL {
+  private func url(parameters: [String: Any]) -> URL {
     guard var components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false) else { fatalError() }
-    components.path = DMPlayerViewController.pathPrefix + videoId
+    components.path = DMPlayerViewController.pathPrefix
     var items = [
       URLQueryItem(name: "api", value: "nativeBridge"),
       URLQueryItem(name: "objc_sdk_version", value: DMPlayerViewController.version),
