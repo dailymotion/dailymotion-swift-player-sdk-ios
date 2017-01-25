@@ -64,8 +64,6 @@ extension ViewController: DMPlayerViewControllerDelegate {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
     switch event {
-    case .namedEvent(let name, _) where name == "apiready":
-      playerViewController.play()
     case .namedEvent(let name, _) where name == "fullscreen_toggle_requested":
       toggleFullScreen()
     case .namedEvent(let name, .some(let data)) where name == "share_requested":
