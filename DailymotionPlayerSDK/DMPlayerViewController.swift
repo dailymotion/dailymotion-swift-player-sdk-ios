@@ -27,6 +27,9 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
   
+  fileprivate var loaded: Bool = false
+  fileprivate var loadVideoId: String?
+  
   public weak var delegate: DMPlayerViewControllerDelegate?
   
   var _baseUrl: URL!
@@ -60,6 +63,7 @@ open class DMPlayerViewController: UIViewController {
     view = webView
     let request = newRequest(accessToken: accessToken, parameters: parameters)
     webView.load(request)
+    webView.navigationDelegate = self
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -71,14 +75,18 @@ open class DMPlayerViewController: UIViewController {
     webView.stopLoading()
     webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
   }
-
+  
   /// Load a video with ID and optional OAuth token
   ///
   /// - Parameter videoId: The video's XID
   public func load(videoId: String) {
     assert(baseUrl != nil)
-    
-    webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
+    if self.loaded {
+      webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
+    }
+    else {
+      self.loadVideoId = videoId
+    }
   }
   
   private func newRequest(accessToken: String?, parameters: [String: Any]) -> URLRequest {
@@ -190,3 +198,16 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
   
 }
 
+
+extension DMPlayerViewController: WKNavigationDelegate {
+  
+  public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    self.loaded = true
+    
+    if let loadVideoId = self.loadVideoId {
+      self.load(videoId: loadVideoId)
+      self.loadVideoId = nil
+    }
+  }
+  
+}
