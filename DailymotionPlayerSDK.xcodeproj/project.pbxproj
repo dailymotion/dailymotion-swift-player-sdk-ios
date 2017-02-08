@@ -34,7 +34,7 @@
 		10F9BCFA1DEDD65700E30919 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10F9BD041DEDD6AB00E30919 /* DMPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = DMPlayerViewController.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BD061DEDDC5400E30919 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; };
-		10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DailymotionPlayerSDK.podspec; sourceTree = "<group>"; };
+		10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DailymotionPlayerSDK.podspec; path = ../DailymotionPlayerSDK.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
