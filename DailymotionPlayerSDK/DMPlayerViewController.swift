@@ -27,8 +27,8 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
   
-  fileprivate var loaded: Bool = false
-  fileprivate var loadVideoId: String?
+  fileprivate var isInitialized = false
+  fileprivate var videoIdToLoad: String?
   
   public weak var delegate: DMPlayerViewControllerDelegate?
   
@@ -81,12 +81,13 @@ open class DMPlayerViewController: UIViewController {
   /// - Parameter videoId: The video's XID
   public func load(videoId: String) {
     assert(baseUrl != nil)
-    if self.loaded {
-      webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
+    
+    guard isInitialized else {
+      self.videoIdToLoad = videoId
+      return
     }
-    else {
-      self.loadVideoId = videoId
-    }
+
+    webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
   }
   
   private func newRequest(accessToken: String?, parameters: [String: Any]) -> URLRequest {
@@ -202,11 +203,11 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
 extension DMPlayerViewController: WKNavigationDelegate {
   
   public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    self.loaded = true
+    isInitialized = true
     
-    if let loadVideoId = self.loadVideoId {
-      self.load(videoId: loadVideoId)
-      self.loadVideoId = nil
+    if let videoIdToLoad = videoIdToLoad {
+      load(videoId: videoIdToLoad)
+      self.videoIdToLoad = nil
     }
   }
   
