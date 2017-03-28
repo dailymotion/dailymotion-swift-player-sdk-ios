@@ -27,21 +27,12 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
   
+  private let baseUrl: URL
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
   
   public weak var delegate: DMPlayerViewControllerDelegate?
-  
-  var _baseUrl: URL!
-  public var baseUrl: URL! {
-    get {
-      return _baseUrl ?? DMPlayerViewController.defaultUrl
-    }
-    set {
-      _baseUrl = newValue
-    }
-  }
-  
+
   private lazy var webView: WKWebView = {
     let webView = WKWebView(frame: .zero, configuration: self.newConfiguration())
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -57,8 +48,10 @@ open class DMPlayerViewController: UIViewController {
   
   /// Initialize a new instance of the player
   /// - Parameter parameters:   The dictionary of configuration parameters that are passed to the player.
+  /// - Parameter baseUrl:      An optional base URL. Defaults to dailymotion's server
   /// - Parameter accessToken:  An optional oauth token. If provided it will be passed as Bearer token to the player.
-  public init(parameters: [String: Any], accessToken: String? = nil) {
+  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil) {
+    self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     super.init(nibName: nil, bundle: nil)
     view = webView
     let request = newRequest(accessToken: accessToken, parameters: parameters)
@@ -67,6 +60,7 @@ open class DMPlayerViewController: UIViewController {
   }
   
   public required init?(coder aDecoder: NSCoder) {
+    self.baseUrl = DMPlayerViewController.defaultUrl
     super.init(coder: aDecoder)
   }
   
@@ -80,13 +74,10 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter videoId: The video's XID
   public func load(videoId: String) {
-    assert(baseUrl != nil)
-    
     guard isInitialized else {
       self.videoIdToLoad = videoId
       return
     }
-
     webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
   }
   
