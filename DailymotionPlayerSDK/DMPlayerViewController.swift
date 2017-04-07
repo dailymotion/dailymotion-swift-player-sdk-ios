@@ -73,12 +73,29 @@ open class DMPlayerViewController: UIViewController {
   /// Load a video with ID and optional OAuth token
   ///
   /// - Parameter videoId: The video's XID
-  public func load(videoId: String) {
+  /// - Parameter payload: An optional payload to pass to the load
+  public func load(videoId: String, payload: String? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
       return
     }
-    webView.evaluateJavaScript("player.load('\(videoId)')", completionHandler: nil)
+    let js = buildLoadString(videoId: videoId, payload: payload)
+    webView.evaluateJavaScript(js, completionHandler: nil)
+  }
+  
+  /// Construct the player load JS string
+  ///
+  /// - Parameter videoId: The video's XID
+  /// - Parameter payload: An optional payload to pass to the load
+  /// - Returns: The constructed string
+  private func buildLoadString(videoId: String, payload: String?) -> String {
+    var builder: [String] = []
+    builder.append("player.load('\(videoId)'")
+    if let payload = payload {
+      builder.append(", \(payload)")
+    }
+    builder.append(")")
+    return builder.joined()
   }
   
   private func newRequest(accessToken: String?, parameters: [String: Any]) -> URLRequest {
