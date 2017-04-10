@@ -145,7 +145,6 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "api", value: "nativeBridge"),
       URLQueryItem(name: "objc_sdk_version", value: DMPlayerViewController.version),
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
-      URLQueryItem(name: "GK_PV5_ANTI_ADBLOCK", value: "0"),
       URLQueryItem(name: "webkit-playsinline", value: "1")
     ]
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
