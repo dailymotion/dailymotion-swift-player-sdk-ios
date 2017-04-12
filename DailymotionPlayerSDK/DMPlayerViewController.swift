@@ -179,7 +179,18 @@ open class DMPlayerViewController: UIViewController {
   public func seek(to: TimeInterval) {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
+  
+  /// Mute playback
+  public func mute() {
+    webView.evaluateJavaScript("player.mute()", completionHandler: nil)
+  }
 
+  
+  /// Unmute playback
+  public func unmute() {
+    webView.evaluateJavaScript("player.unmute()", completionHandler: nil)
+  }
+  
 }
 
 extension DMPlayerViewController: WKScriptMessageHandler {
