@@ -22,7 +22,7 @@ class ViewController: UIViewController {
       "sharing-action": "trigger_event"
     ]
     
-    let controller = DMPlayerViewController(parameters: parameters)
+    let controller = DMPlayerViewController(parameters: parameters, cookies: cookies)
     controller.delegate = self
     return controller
   }()
@@ -58,6 +58,12 @@ class ViewController: UIViewController {
     playerViewController.load(videoId: "x4r5udv")
   }
 
+  @IBAction func umute(_ sender: Any) {
+    playerViewController.unmute()
+  }
+  @IBAction func mute(_ sender: Any) {
+    playerViewController.mute()
+  }
 }
 
 extension ViewController: DMPlayerViewControllerDelegate {

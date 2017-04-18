@@ -47,14 +47,16 @@ open class DMPlayerViewController: UIViewController {
   }
   
   /// Initialize a new instance of the player
-  /// - Parameter parameters:   The dictionary of configuration parameters that are passed to the player.
-  /// - Parameter baseUrl:      An optional base URL. Defaults to dailymotion's server
-  /// - Parameter accessToken:  An optional oauth token. If provided it will be passed as Bearer token to the player.
-  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil) {
+  /// - Parameters:
+  ///   - parameters:  The dictionary of configuration parameters that are passed to the player.
+  ///   - baseUrl:     An optional base URL. Defaults to dailymotion's server.
+  ///   - accessToken: An optional oauth token. If provided it will be passed as Bearer token to the player.
+  ///   - cookies:     An optional array of HTTPCookie values that are passed to the player.
+  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
     self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     super.init(nibName: nil, bundle: nil)
     view = webView
-    let request = newRequest(accessToken: accessToken, parameters: parameters)
+    let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
   }
@@ -98,10 +100,14 @@ open class DMPlayerViewController: UIViewController {
     return builder.joined()
   }
   
-  private func newRequest(accessToken: String?, parameters: [String: Any]) -> URLRequest {
+  private func newRequest(parameters: [String: Any], accessToken: String?, cookies: [HTTPCookie]?) -> URLRequest {
     var request = URLRequest(url: url(parameters: parameters))
     if let accessToken = accessToken {
       request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+    }
+    if let cookies = cookies {
+      let cookieHeader = cookies.flatMap({ "\($0.name)=\($0.value)" }).joined(separator: ";")
+      request.addValue(cookieHeader, forHTTPHeaderField: "Cookie")
     }
     return request
   }
