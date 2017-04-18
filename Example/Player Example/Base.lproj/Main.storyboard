@@ -37,32 +37,14 @@
                                     <action selector="play:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TAn-yu-pZE"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y1M-d9-ggz">
-                                <rect key="frame" x="170" y="485" width="35" height="30"/>
-                                <state key="normal" title="Mute"/>
-                                <connections>
-                                    <action selector="mute:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cZ6-pq-3M5"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0g3-Gj-Sj6">
-                                <rect key="frame" x="160" y="535" width="55" height="30"/>
-                                <state key="normal" title="Unmute"/>
-                                <connections>
-                                    <action selector="umute:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9Gk-UB-sFL"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="gVC-L5-R0Z" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="33T-EU-shu"/>
-                            <constraint firstItem="Y1M-d9-ggz" firstAttribute="top" secondItem="nAG-kl-ZOf" secondAttribute="bottom" constant="8" id="DH3-Dn-nJy"/>
-                            <constraint firstItem="Y1M-d9-ggz" firstAttribute="centerX" secondItem="nAG-kl-ZOf" secondAttribute="centerX" id="OLU-9J-rdx"/>
                             <constraint firstItem="gVC-L5-R0Z" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="VUY-6C-B6Y"/>
                             <constraint firstItem="nAG-kl-ZOf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="hMj-Te-Rc8"/>
                             <constraint firstItem="nAG-kl-ZOf" firstAttribute="top" secondItem="gVC-L5-R0Z" secondAttribute="bottom" constant="8" id="kIZ-cI-r2s"/>
                             <constraint firstItem="gVC-L5-R0Z" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="v7r-9g-Yd2"/>
-                            <constraint firstItem="0g3-Gj-Sj6" firstAttribute="centerX" secondItem="Y1M-d9-ggz" secondAttribute="centerX" id="wON-yn-ffW"/>
-                            <constraint firstItem="0g3-Gj-Sj6" firstAttribute="top" secondItem="Y1M-d9-ggz" secondAttribute="bottom" constant="20" id="xCU-nM-bQC"/>
                         </constraints>
                     </view>
                     <connections>
