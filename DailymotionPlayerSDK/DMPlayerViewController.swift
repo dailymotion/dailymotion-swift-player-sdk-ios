@@ -33,14 +33,7 @@ open class DMPlayerViewController: UIViewController {
   
   public weak var delegate: DMPlayerViewControllerDelegate?
 
-  private lazy var webView: WKWebView = {
-    let webView = WKWebView(frame: .zero, configuration: self.newConfiguration())
-    webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    webView.backgroundColor = .clear
-    webView.isOpaque = false
-    webView.scrollView.isScrollEnabled = false
-    return webView
-  }()
+  private var webView: WKWebView!
 
   override open var shouldAutorotate: Bool {
     return true
@@ -55,10 +48,20 @@ open class DMPlayerViewController: UIViewController {
   public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
     self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     super.init(nibName: nil, bundle: nil)
+    webView = newWebView(cookies: cookies)
     view = webView
     let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
+  }
+  
+  private func newWebView(cookies: [HTTPCookie]?) -> WKWebView {
+    let webView = WKWebView(frame: .zero, configuration: newConfiguration(cookies: cookies))
+    webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    webView.backgroundColor = .clear
+    webView.isOpaque = false
+    webView.scrollView.isScrollEnabled = false
+    return webView
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -112,7 +115,7 @@ open class DMPlayerViewController: UIViewController {
     return request
   }
   
-  private func newConfiguration() -> WKWebViewConfiguration {
+  private func newConfiguration(cookies: [HTTPCookie]?) -> WKWebViewConfiguration {
     let configuration = WKWebViewConfiguration()
     configuration.allowsInlineMediaPlayback = true
     if #available(iOS 9.0, *) {
@@ -123,7 +126,7 @@ open class DMPlayerViewController: UIViewController {
       configuration.mediaPlaybackAllowsAirPlay = true
     }
     configuration.preferences = newPreferences()
-    configuration.userContentController = newContentController()
+    configuration.userContentController = newContentController(cookies: cookies)
     return configuration
   }
   
@@ -133,15 +136,32 @@ open class DMPlayerViewController: UIViewController {
     return preferences
   }
   
-  private func newContentController() -> WKUserContentController {
+  private func newContentController(cookies: [HTTPCookie]?) -> WKUserContentController {
     let controller = WKUserContentController()
-    var source = "window.dmpNativeBridge = {"
-    source += "triggerEvent: function(data) {"
-    source += "window.webkit.messageHandlers.\(DMPlayerViewController.messageHandlerEvent).postMessage(data);"
-    source += "}}"
+    var source = eventHandler()
+    if let cookies = cookies {
+      let cookieSource = cookies.map({ "document.cookie='\(jsCookie(from: $0))'" }).joined(separator: "; ")
+      source += cookieSource
+    }
     controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     controller.add(Trampoline(delegate: self), name: DMPlayerViewController.messageHandlerEvent)
     return controller
+  }
+  
+  private func eventHandler() -> String {
+    var source = "window.dmpNativeBridge = {"
+    source += "triggerEvent: function(data) {"
+    source += "window.webkit.messageHandlers.\(DMPlayerViewController.messageHandlerEvent).postMessage(data);"
+    source += "}};"
+    return source
+  }
+  
+  private func jsCookie(from cookie: HTTPCookie) -> String {
+    var value = "\(cookie.name)=\(cookie.value);domain=\(cookie.domain);path=\(cookie.path)"
+    if cookie.isSecure {
+      value += ";secure=true"
+    }
+    return value
   }
   
   private func url(parameters: [String: Any]) -> URL {
