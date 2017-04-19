@@ -151,7 +151,7 @@ open class DMPlayerViewController: UIViewController {
   private func eventHandler() -> String {
     var source = "window.dmpNativeBridge = {"
     source += "triggerEvent: function(data) {"
-    source += "window.webkit.messageHandlers.\(DMPlayerViewController.messageHandlerEvent).postMessage(data);"
+    source += "window.webkit.messageHandlers.\(DMPlayerViewController.messageHandlerEvent).postMessage(decodeURIComponent(data));"
     source += "}};"
     return source
   }
