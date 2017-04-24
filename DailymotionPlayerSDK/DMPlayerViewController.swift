@@ -88,6 +88,16 @@ open class DMPlayerViewController: UIViewController {
     webView.evaluateJavaScript(js, completionHandler: nil)
   }
   
+  /// Set a player property
+  ///
+  /// - Parameter prop: The property name
+  /// - Parameter data: The data value to set
+  public func setProp(_ prop: String, data: String) {
+    guard isInitialized else { return }
+    let js = "player.setProp('\(prop)', \(data))"
+    webView.evaluateJavaScript(js, completionHandler: nil)
+  }
+  
   /// Construct the player load JS string
   ///
   /// - Parameter videoId: The video's XID
