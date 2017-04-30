@@ -79,4 +79,16 @@ final class EventParserTests: XCTestCase {
     XCTAssertNil(event)
   }
   
+  func testParseMalformedDataGracefully() {
+    let event = parseEvent(from: "event=foo&")!
+    
+    switch event {
+    case .namedEvent(let name, let data):
+      XCTAssertEqual(name, "foo")
+      XCTAssertNil(data)
+    default:
+      assertionFailure()
+    }
+  }
+  
 }

@@ -35,7 +35,9 @@ final class EventParser {
       .map({ $0.components(separatedBy: "=") })
       .reduce([String: String]()) { initial, keyValue in
         var returnValue = initial
-        returnValue[keyValue[0]] = keyValue[1]
+        if let key = keyValue.first, let value = keyValue.last, !key.isEmpty, !value.isEmpty {
+          returnValue[key] = value
+        }
         return returnValue
       }
   }
