@@ -22,7 +22,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "2.9.3"
+  fileprivate static let version = "3.4.7"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
@@ -255,6 +255,19 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
 
 
 extension DMPlayerViewController: WKNavigationDelegate {
+  
+  public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    guard let url = navigationAction.request.url else {
+      decisionHandler(.allow)
+      return
+    }
+    if !url.absoluteString.contains(DMPlayerViewController.pathPrefix) {
+      delegate?.player(self, openUrl: url)
+      decisionHandler(.cancel)
+    }
+    decisionHandler(.allow)
+  }
   
   public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     isInitialized = true

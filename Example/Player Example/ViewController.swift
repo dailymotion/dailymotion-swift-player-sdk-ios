@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import SafariServices
 import DailymotionPlayerSDK
 
 class ViewController: UIViewController {
@@ -102,6 +103,8 @@ extension ViewController: DMPlayerViewControllerDelegate {
   }
   
   func player(_ player: DMPlayerViewController, openUrl url: URL) {
+    let controller = SFSafariViewController(url: url)
+    present(controller, animated: true, completion: nil)
   }
   
 }
