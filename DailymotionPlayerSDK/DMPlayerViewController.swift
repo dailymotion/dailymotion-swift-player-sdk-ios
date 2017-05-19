@@ -22,7 +22,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.4.7"
+  fileprivate static let version = "3.4.8"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
@@ -263,8 +263,12 @@ extension DMPlayerViewController: WKNavigationDelegate {
       return
     }
     if !url.absoluteString.contains(DMPlayerViewController.pathPrefix) {
-      delegate?.player(self, openUrl: url)
-      decisionHandler(.cancel)
+      if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+         let scheme = components.scheme, scheme == "http" || scheme == "https" {
+        delegate?.player(self, openUrl: url)
+        decisionHandler(.cancel)
+        return
+      }
     }
     decisionHandler(.allow)
   }
