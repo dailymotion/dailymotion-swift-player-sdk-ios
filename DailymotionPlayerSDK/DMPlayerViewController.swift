@@ -30,6 +30,7 @@ open class DMPlayerViewController: UIViewController {
   private let baseUrl: URL
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
+  fileprivate var payloadToLoad: String?
   
   public weak var delegate: DMPlayerViewControllerDelegate?
 
@@ -82,6 +83,7 @@ open class DMPlayerViewController: UIViewController {
   public func load(videoId: String, payload: String? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
+      self.payloadToLoad = payload
       return
     }
     let js = buildLoadString(videoId: videoId, payload: payload)
@@ -277,8 +279,9 @@ extension DMPlayerViewController: WKNavigationDelegate {
     isInitialized = true
     
     if let videoIdToLoad = videoIdToLoad {
-      load(videoId: videoIdToLoad)
+      load(videoId: videoIdToLoad, payload: payloadToLoad)
       self.videoIdToLoad = nil
+      self.payloadToLoad = nil
     }
   }
   
