@@ -27,7 +27,7 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
   
-  private let baseUrl: URL
+  private var baseUrl: URL!
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
   fileprivate var payloadToLoad: String?
@@ -47,13 +47,8 @@ open class DMPlayerViewController: UIViewController {
   ///   - accessToken: An optional oauth token. If provided it will be passed as Bearer token to the player.
   ///   - cookies:     An optional array of HTTPCookie values that are passed to the player.
   public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
-    self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     super.init(nibName: nil, bundle: nil)
-    webView = newWebView(cookies: cookies)
-    view = webView
-    let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
-    webView.load(request)
-    webView.navigationDelegate = self
+    self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies)
   }
   
   private func newWebView(cookies: [HTTPCookie]?) -> WKWebView {
@@ -66,10 +61,18 @@ open class DMPlayerViewController: UIViewController {
   }
   
   public required init?(coder aDecoder: NSCoder) {
-    self.baseUrl = DMPlayerViewController.defaultUrl
     super.init(coder: aDecoder)
   }
   
+  public func loadWebView(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
+    self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
+    webView = newWebView(cookies: cookies)
+    view = webView
+    let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
+    webView.load(request)
+    webView.navigationDelegate = self
+  }
+    
   deinit {
     pause()
     webView.stopLoading()
