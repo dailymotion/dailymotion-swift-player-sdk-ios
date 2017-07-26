@@ -52,7 +52,7 @@ class ViewController: UIViewController {
     
     isPlayerFullscreen = size.width > size.height
     playerViewController.toggleFullscreen()
-    updatePlayerSize()
+    updatePlayer(height: size.height)
   }
   
   @IBAction private func play(_ sender: Any) {
@@ -78,7 +78,7 @@ extension ViewController: DMPlayerViewControllerDelegate {
   fileprivate func toggleFullScreen() {
     isPlayerFullscreen = !isPlayerFullscreen
     updateDeviceOrientation()
-    updatePlayerSize()
+    updatePlayer(height: view.frame.size.height)
   }
   
   private func updateDeviceOrientation() {
@@ -86,9 +86,9 @@ extension ViewController: DMPlayerViewControllerDelegate {
     UIDevice.current.setValue(orientation.rawValue, forKey: #keyPath(UIDevice.orientation))
   }
   
-  fileprivate func updatePlayerSize() {
+  fileprivate func updatePlayer(height: CGFloat) {
     if isPlayerFullscreen {
-      playerHeightConstraint.constant = view.frame.size.height
+      playerHeightConstraint.constant = height
     } else {
       playerHeightConstraint.constant = initialPlayerHeight
     }
