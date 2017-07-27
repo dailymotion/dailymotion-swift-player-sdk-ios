@@ -32,7 +32,7 @@ open class DMPlayerViewController: UIViewController {
   fileprivate var videoIdToLoad: String?
   fileprivate var payloadToLoad: String?
   
-  public weak var delegate: DMPlayerViewControllerDelegate?
+  open weak var delegate: DMPlayerViewControllerDelegate?
 
   private var webView: WKWebView!
 
@@ -64,7 +64,7 @@ open class DMPlayerViewController: UIViewController {
     super.init(coder: aDecoder)
   }
   
-  public func loadWebView(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
+  open func loadWebView(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
     self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     webView = newWebView(cookies: cookies)
     view = webView
@@ -83,7 +83,7 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter videoId: The video's XID
   /// - Parameter payload: An optional payload to pass to the load
-  public func load(videoId: String, payload: String? = nil) {
+  open func load(videoId: String, payload: String? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
       self.payloadToLoad = payload
@@ -97,7 +97,7 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter prop: The property name
   /// - Parameter data: The data value to set
-  public func setProp(_ prop: String, data: String) {
+  open func setProp(_ prop: String, data: String) {
     guard isInitialized else { return }
     let js = "player.setProp('\(prop)', \(data))"
     webView.evaluateJavaScript(js, completionHandler: nil)
@@ -195,7 +195,7 @@ open class DMPlayerViewController: UIViewController {
     return url
   }
 
-  public func toggleControls(show: Bool) {
+  open func toggleControls(show: Bool) {
     let hasControls = show ? "1" : "0"
     notifyPlayerApi(method: "controls", argument: hasControls)
   }
@@ -205,30 +205,30 @@ open class DMPlayerViewController: UIViewController {
     webView.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
   }
   
-  public func toggleFullscreen() {
+  open func toggleFullscreen() {
     notifyPlayerApi(method: "notifyFullscreenChanged")
   }
 
-  public func play() {
+  open func play() {
     notifyPlayerApi(method: "play")
   }
   
-  public func pause() {
+  open func pause() {
     notifyPlayerApi(method: "pause")
   }
   
-  public func seek(to: TimeInterval) {
+  open func seek(to: TimeInterval) {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
   
   /// Mute playback
-  public func mute() {
+  open func mute() {
     webView.evaluateJavaScript("player.mute()", completionHandler: nil)
   }
 
   
   /// Unmute playback
-  public func unmute() {
+  open func unmute() {
     webView.evaluateJavaScript("player.unmute()", completionHandler: nil)
   }
   
@@ -236,7 +236,7 @@ open class DMPlayerViewController: UIViewController {
 
 extension DMPlayerViewController: WKScriptMessageHandler {
  
-  public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+  open func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
     guard let event = EventParser.parseEvent(from: message.body) else { return }
     delegate?.player(self, didReceiveEvent: event)
   }
@@ -261,7 +261,7 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
 
 extension DMPlayerViewController: WKNavigationDelegate {
   
-  public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+  open func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                       decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     guard let url = navigationAction.request.url else {
       decisionHandler(.allow)
@@ -278,7 +278,7 @@ extension DMPlayerViewController: WKNavigationDelegate {
     decisionHandler(.allow)
   }
   
-  public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+  open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     isInitialized = true
     
     if let videoIdToLoad = videoIdToLoad {
