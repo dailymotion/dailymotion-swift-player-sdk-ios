@@ -30,7 +30,7 @@ open class DMPlayerViewController: UIViewController {
   private var baseUrl: URL!
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
-  fileprivate var payloadToLoad: String?
+  fileprivate var payloadToLoad: [String: Any]?
   
   open weak var delegate: DMPlayerViewControllerDelegate?
 
@@ -83,14 +83,20 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter videoId: The video's XID
   /// - Parameter payload: An optional payload to pass to the load
-  open func load(videoId: String, payload: String? = nil) {
+  open func load(videoId: String, payload: [String: Any]? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
       self.payloadToLoad = payload
       return
     }
-    let js = buildLoadString(videoId: videoId, payload: payload)
+    let js = buildLoadString(videoId: videoId, payload: payload != nil ? convertPayloadToString(payload: payload!) : nil)
     webView.evaluateJavaScript(js, completionHandler: nil)
+  }
+  
+  private func convertPayloadToString(payload: [String: Any]) -> String? {
+    guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
+      let string = String(data: data, encoding: .utf8) else { return nil }
+    return string
   }
   
   /// Set a player property
