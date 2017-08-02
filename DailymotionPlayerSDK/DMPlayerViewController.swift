@@ -95,7 +95,7 @@ open class DMPlayerViewController: UIViewController {
   
   private func convertPayloadToString(payload: [String: Any]) -> String? {
     guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
-      let string = String(data: data, encoding: .utf8) else { return nil }
+          let string = String(data: data, encoding: .utf8) else { return nil }
     return string
   }
   
@@ -103,9 +103,9 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter prop: The property name
   /// - Parameter data: The data value to set
-  open func setProp(_ prop: String, data: String) {
-    guard isInitialized else { return }
-    let js = "player.setProp('\(prop)', \(data))"
+  open func setProp(_ prop: String, data: [String: Any]) {
+    guard isInitialized, let converted = convertPayloadToString(payload: data) else { return }
+    let js = "player.setProp('\(prop)', \(converted))"
     webView.evaluateJavaScript(js, completionHandler: nil)
   }
   
