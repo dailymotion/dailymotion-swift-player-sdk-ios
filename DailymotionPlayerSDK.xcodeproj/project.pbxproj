@@ -30,10 +30,10 @@
 		10F9BCED1DEDD65700E30919 /* DailymotionPlayerSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DailymotionPlayerSDK.h; sourceTree = "<group>"; };
 		10F9BCEE1DEDD65700E30919 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10F9BCF31DEDD65700E30919 /* DailymotionPlayerSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailymotionPlayerSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		10F9BCF81DEDD65700E30919 /* EventParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventParserTests.swift; sourceTree = "<group>"; };
+		10F9BCF81DEDD65700E30919 /* EventParserTests.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = EventParserTests.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BCFA1DEDD65700E30919 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10F9BD041DEDD6AB00E30919 /* DMPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = DMPlayerViewController.swift; sourceTree = "<group>"; tabWidth = 2; };
-		10F9BD061DEDDC5400E30919 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; };
+		10F9BD061DEDDC5400E30919 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DailymotionPlayerSDK.podspec; path = ../DailymotionPlayerSDK.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 

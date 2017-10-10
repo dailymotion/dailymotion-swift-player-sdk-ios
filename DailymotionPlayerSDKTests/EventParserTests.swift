@@ -67,6 +67,20 @@ final class EventParserTests: XCTestCase {
     }
   }
   
+  func testParseAdditionalEventDataWithUnescapedCharacter() {
+    let event = parseEvent(from: "event=videochange&videoId=x63qw0n&title=\"13h15\".+Quand+l\'Iran+a+payé+un+milliards+de+dollars+pour+avoir+10%+de+l\'uranium+enrichi+par+Eurodif")!
+    
+    switch event {
+    case .namedEvent(let name, let data):
+      XCTAssertEqual(name, "videochange")
+      XCTAssertNotNil(data)
+      XCTAssertEqual(data?["title"], "\"13h15\".+Quand+l\'Iran+a+payé+un+milliards+de+dollars+pour+avoir+10%+de+l\'uranium+enrichi+par+Eurodif")
+      XCTAssertEqual(data?["videoId"], "x63qw0n")
+    default:
+      assertionFailure()
+    }
+  }
+  
   func testParseGarbageOK() {
     let event = parseEvent(from: "foo=bar&baz=bat")
     

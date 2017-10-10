@@ -31,15 +31,14 @@ final class EventParser {
   }
   
   private static func parseEventAndTime(from: String) -> [String: String] {
-    return from.components(separatedBy: "&")
-      .map({ $0.components(separatedBy: "=") })
-      .reduce([String: String]()) { initial, keyValue in
-        var returnValue = initial
-        if let key = keyValue.first, let value = keyValue.last, !key.isEmpty, !value.isEmpty {
-          returnValue[key] = value
-        }
-        return returnValue
+    let splitedEvents = from.components(separatedBy: "&").map({ $0.components(separatedBy: "=") })
+    var eventAndTime: [String: String] = [:]
+    for entry in splitedEvents {
+      if let key = entry.first, let value = entry.last, !key.isEmpty, !value.isEmpty {
+        eventAndTime[key] = value
       }
+    }
+    return eventAndTime
   }
   
   private static func parseTime(from eventAndTime: [String: String]) -> Double? {
@@ -53,14 +52,12 @@ final class EventParser {
   }
   
   private static func parseData(from event: [String: String]) -> [String: String]? {
-    let cleanedEvent = Array(event.keys)
-      .filter({ $0 != Keys.event && $0 != Keys.time && $0 != Keys.duration })
-      .reduce([String: String]()){ initial, key in
-        var returnValue = initial
-        returnValue[key] = event[key]?.removingPercentEncoding!
-        return returnValue
+    var sanitizedData: [String: String] = [:]
+    for (key, value) in event {
+      if key != Keys.event && key != Keys.time && key != Keys.duration {
+        sanitizedData[key] = value.removingPercentEncoding ?? value
       }
-    return !cleanedEvent.isEmpty ? cleanedEvent : nil
+    }
+    return sanitizedData.isEmpty ? nil : sanitizedData
   }
-
 }
