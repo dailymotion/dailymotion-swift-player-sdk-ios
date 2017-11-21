@@ -22,7 +22,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.4.9"
+  fileprivate static let version = "3.6.3"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
