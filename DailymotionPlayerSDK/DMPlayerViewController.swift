@@ -71,7 +71,6 @@ open class DMPlayerViewController: UIViewController {
     let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
-    webView.uiDelegate = self
   }
     
   deinit {
@@ -293,16 +292,5 @@ extension DMPlayerViewController: WKNavigationDelegate {
       self.videoIdToLoad = nil
       self.payloadToLoad = nil
     }
-  }
-}
-
-extension DMPlayerViewController: WKUIDelegate {
-  
-  public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
-                      for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-    if let url = navigationAction.request.url {
-      delegate?.player(self, openUrl: url)
-    }
-    return nil
   }
 }
