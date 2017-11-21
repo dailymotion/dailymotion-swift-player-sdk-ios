@@ -22,7 +22,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.4.9"
+  fileprivate static let version = "3.6.3"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
@@ -71,7 +71,6 @@ open class DMPlayerViewController: UIViewController {
     let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
-    webView.uiDelegate = self
   }
     
   deinit {
@@ -293,16 +292,5 @@ extension DMPlayerViewController: WKNavigationDelegate {
       self.videoIdToLoad = nil
       self.payloadToLoad = nil
     }
-  }
-}
-
-extension DMPlayerViewController: WKUIDelegate {
-  
-  public func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,
-                      for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
-    if let url = navigationAction.request.url {
-      delegate?.player(self, openUrl: url)
-    }
-    return nil
   }
 }
