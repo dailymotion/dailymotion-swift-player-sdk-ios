@@ -9,7 +9,8 @@ public protocol DMPlayerViewControllerDelegate: class {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent)
   func player(_ player: DMPlayerViewController, openUrl url: URL)
-  func player(_ player: DMPlayerViewController, didFailWithError error: Error)
+  func playerDidInitialize(_ player: DMPlayerViewController)
+  func player(_ player: DMPlayerViewController, didFailToInitializeWithError error: Error)
   
 }
 
@@ -295,10 +296,11 @@ extension DMPlayerViewController: WKNavigationDelegate {
       self.videoIdToLoad = nil
       self.payloadToLoad = nil
     }
+    delegate?.playerDidInitialize(self)
   }
   
   open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-    delegate?.player(self, didFailWithError: error)
+    delegate?.player(self, didFailToInitializeWithError: error)
   }
   
 }
