@@ -9,6 +9,7 @@ public protocol DMPlayerViewControllerDelegate: class {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent)
   func player(_ player: DMPlayerViewController, openUrl url: URL)
+  func player(_ player: DMPlayerViewController, didFailWithError error: Error)
   
 }
 
@@ -247,6 +248,7 @@ extension DMPlayerViewController: WKScriptMessageHandler {
     guard let event = EventParser.parseEvent(from: message.body) else { return }
     delegate?.player(self, didReceiveEvent: event)
   }
+  
 }
 
 /// A weak delegate bridge. WKScriptMessageHandler retains it's delegate and causes a memory leak.
@@ -294,6 +296,11 @@ extension DMPlayerViewController: WKNavigationDelegate {
       self.payloadToLoad = nil
     }
   }
+  
+  open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    delegate?.player(self, didFailWithError: error)
+  }
+  
 }
 
 extension DMPlayerViewController: WKUIDelegate {
@@ -305,5 +312,6 @@ extension DMPlayerViewController: WKUIDelegate {
     }
     return nil
   }
+  
 }
 
