@@ -299,6 +299,10 @@ extension DMPlayerViewController: WKNavigationDelegate {
     delegate?.playerDidInitialize(self)
   }
   
+  open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    delegate?.player(self, didFailToInitializeWithError: error)
+  }
+  
   open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     delegate?.player(self, didFailToInitializeWithError: error)
   }
