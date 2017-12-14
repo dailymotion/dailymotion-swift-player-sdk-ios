@@ -9,6 +9,8 @@ public protocol DMPlayerViewControllerDelegate: class {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent)
   func player(_ player: DMPlayerViewController, openUrl url: URL)
+  func playerDidInitialize(_ player: DMPlayerViewController)
+  func player(_ player: DMPlayerViewController, didFailToInitializeWithError error: Error)
   
 }
 
@@ -22,7 +24,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.6.4"
+  fileprivate static let version = "3.7.0"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
@@ -247,6 +249,7 @@ extension DMPlayerViewController: WKScriptMessageHandler {
     guard let event = EventParser.parseEvent(from: message.body) else { return }
     delegate?.player(self, didReceiveEvent: event)
   }
+  
 }
 
 /// A weak delegate bridge. WKScriptMessageHandler retains it's delegate and causes a memory leak.
@@ -293,7 +296,17 @@ extension DMPlayerViewController: WKNavigationDelegate {
       self.videoIdToLoad = nil
       self.payloadToLoad = nil
     }
+    delegate?.playerDidInitialize(self)
   }
+  
+  open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    delegate?.player(self, didFailToInitializeWithError: error)
+  }
+  
+  open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    delegate?.player(self, didFailToInitializeWithError: error)
+  }
+  
 }
 
 extension DMPlayerViewController: WKUIDelegate {
@@ -305,5 +318,6 @@ extension DMPlayerViewController: WKUIDelegate {
     }
     return nil
   }
+  
 }
 

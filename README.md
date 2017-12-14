@@ -73,7 +73,7 @@ class VideoViewController: UIViewController {
 
 extension VideoViewController: DMPlayerViewControllerDelegate {
 
-  // The delegate has 2 mandatory functions
+  // The delegate has 4 mandatory functions
 
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
     // Sends player events of either .namedEvent(name: String, data: [String: String]?) or .timeEvent(name: String, time: Double)
@@ -81,6 +81,14 @@ extension VideoViewController: DMPlayerViewControllerDelegate {
 
   func player(_ player: DMPlayerViewController, openUrl url: URL) {
     // Sent when a user taps on an ad that can display more information
+  }
+
+  func playerDidInitialize(_ player: DMPlayerViewController) {
+    // Sent when the player has finished initializing
+  }
+
+  func player(_ player: DMPlayerViewController, didFailToInitializeWithError error: Error) {
+    // Sent when the player failed to initialized
   }
 
 }

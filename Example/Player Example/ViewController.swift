@@ -107,4 +107,14 @@ extension ViewController: DMPlayerViewControllerDelegate {
     present(controller, animated: true, completion: nil)
   }
   
+  func playerDidInitialize(_ player: DMPlayerViewController) {
+  }
+  
+  func player(_ player: DMPlayerViewController, didFailToInitializeWithError error: Error) {
+    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+    let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+    alertController.addAction(alertAction)
+    present(alertController, animated: true)
+  }
+  
 }
