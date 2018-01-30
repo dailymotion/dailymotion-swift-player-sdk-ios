@@ -205,8 +205,14 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
       URLQueryItem(name: "webkit-playsinline", value: "1")
     ]
+    
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
     items.append(contentsOf: parameterItems)
+    
+    if let deviceIdentifier = deviceIdentifier {
+      items.append(URLQueryItem(name: "ad_id", value: deviceIdentifier))
+    }
+    
     components.queryItems = items
     let url = components.url!
     return url
