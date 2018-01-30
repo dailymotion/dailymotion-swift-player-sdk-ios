@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
 
   s.source_files = 'DailymotionPlayerSDK/*.swift'
 
-  s.frameworks = 'UIKit', 'WebKit'
+  s.frameworks = 'UIKit', 'WebKit', 'AdSupport'
 end

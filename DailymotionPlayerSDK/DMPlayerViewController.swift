@@ -4,6 +4,7 @@
 
 import UIKit
 import WebKit
+import AdSupport
 
 public protocol DMPlayerViewControllerDelegate: class {
   
@@ -37,6 +38,8 @@ open class DMPlayerViewController: UIViewController {
   open weak var delegate: DMPlayerViewControllerDelegate?
 
   private var webView: WKWebView!
+  
+  private var deviceIdentifier: String?
 
   override open var shouldAutorotate: Bool {
     return true
@@ -48,8 +51,13 @@ open class DMPlayerViewController: UIViewController {
   ///   - baseUrl:     An optional base URL. Defaults to dailymotion's server.
   ///   - accessToken: An optional oauth token. If provided it will be passed as Bearer token to the player.
   ///   - cookies:     An optional array of HTTPCookie values that are passed to the player.
-  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
+  ///   - allowIDFA:   Allow IDFA Collection. Defaults true
+  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil,
+              allowIDFA: Bool = true) {
     super.init(nibName: nil, bundle: nil)
+    if allowIDFA {
+      deviceIdentifier = advertisingIdentifier()
+    }
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies)
   }
   
@@ -314,6 +322,19 @@ extension DMPlayerViewController: WKUIDelegate {
       delegate?.player(self, openUrl: url)
     }
     return nil
+  }
+  
+}
+
+extension DMPlayerViewController {
+  
+  fileprivate func advertisingIdentifier() -> String? {
+    let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
+    if canTrack, let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier {
+      return advertisingIdentifier.uuidString
+    } else {
+      return nil
+    }
   }
   
 }
