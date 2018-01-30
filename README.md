@@ -1,5 +1,6 @@
 # Dailymotion Swift Player SDK for iOS
 
+[![Build Status](https://www.bitrise.io/app/61743b2a9a9a22b7/status.svg?token=N-WhdHZx9J3uFo8ZCqsXNw&branch=develop)](https://www.bitrise.io/app/61743b2a9a9a22b7)
 [![Version](https://img.shields.io/cocoapods/v/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
 [![License](https://img.shields.io/cocoapods/l/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
