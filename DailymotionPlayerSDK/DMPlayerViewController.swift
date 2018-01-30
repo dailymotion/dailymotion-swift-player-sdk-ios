@@ -24,7 +24,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.0"
+  fileprivate static let version = "3.7.1"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
@@ -230,13 +230,10 @@ open class DMPlayerViewController: UIViewController {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
   
-  /// Mute playback
   open func mute() {
     webView.evaluateJavaScript("player.mute()", completionHandler: nil)
   }
 
-  
-  /// Unmute playback
   open func unmute() {
     webView.evaluateJavaScript("player.unmute()", completionHandler: nil)
   }
