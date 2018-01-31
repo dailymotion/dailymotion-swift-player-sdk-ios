@@ -210,7 +210,8 @@ open class DMPlayerViewController: UIViewController {
     items.append(contentsOf: parameterItems)
     
     if let deviceIdentifier = deviceIdentifier {
-      items.append(URLQueryItem(name: "ad_id", value: deviceIdentifier))
+      items.append(URLQueryItem(name: "ads_device_id", value: deviceIdentifier))
+      items.append(URLQueryItem(name: "ads_device_tracking", value: true.description))
     }
     
     components.queryItems = items

@@ -10,6 +10,8 @@
 - Swift 3
 - iOS 8+
 
+**Note: this SDK is using IDFA collection (will be asked by Apple in iTunes Connect when you will submit your app in the store). You can still disable it if you really need to when instantiating `DMPlayerViewController`.**
+
 Note: If you require an Objective-C version of the library or support for iOS < 8, use the [old version](https://github.com/dailymotion/dailymotion-player-sdk-ios) of the library.
 
 ## Installation
