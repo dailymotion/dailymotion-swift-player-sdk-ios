@@ -356,15 +356,20 @@ extension DMPlayerViewController: WKUIDelegate {
 }
 
 extension DMPlayerViewController {
-  
-  fileprivate func advertisingIdentifier() -> String? {
-    let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
-    if canTrack, let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier {
-      return advertisingIdentifier.uuidString
-    } else {
-      return nil
+    
+    fileprivate func advertisingIdentifier() -> String? {
+        let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
+        let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
+        if canTrack {
+            #if swift(>=4.0)
+                return advertisingIdentifier.uuidString
+            #else
+                return advertisingIdentifier?.uuidString
+            #endif
+        } else {
+            return nil
+        }
     }
-  }
-  
+    
 }
 
