@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DailymotionPlayerSDK'
-  s.version          = '3.7.0'
+  s.version          = '3.7.1'
   s.summary          = 'Dailymotion iOS player (Swift)'
   s.homepage         = 'https://github.com/dailymotion/dailymotion-swift-player-sdk-ios'
   s.author           = 'Dailymotion'
@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
 
   s.source_files = 'DailymotionPlayerSDK/*.swift'
 
-  s.frameworks = 'UIKit', 'WebKit'
+  s.frameworks = 'UIKit', 'WebKit', 'AdSupport'
 end

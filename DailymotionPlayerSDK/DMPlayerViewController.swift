@@ -4,6 +4,7 @@
 
 import UIKit
 import WebKit
+import AdSupport
 
 public protocol DMPlayerViewControllerDelegate: class {
   
@@ -24,19 +25,22 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.0"
+  fileprivate static let version = "3.7.1"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
-  private static let messageHandlerEvent = "triggerEvent"
+  fileprivate static let messageHandlerEvent = "triggerEvent"
+  fileprivate static let consoleHandlerEvent = "consoleEvent"
+  fileprivate static let loggerParameterKey = "logger"
   
+  private var webView: WKWebView!
   private var baseUrl: URL!
+  private var deviceIdentifier: String?
+  private var loggerEnabled: Bool = false
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
   fileprivate var payloadToLoad: [String: Any]?
   
   open weak var delegate: DMPlayerViewControllerDelegate?
-
-  private var webView: WKWebView!
 
   override open var shouldAutorotate: Bool {
     return true
@@ -48,8 +52,16 @@ open class DMPlayerViewController: UIViewController {
   ///   - baseUrl:     An optional base URL. Defaults to dailymotion's server.
   ///   - accessToken: An optional oauth token. If provided it will be passed as Bearer token to the player.
   ///   - cookies:     An optional array of HTTPCookie values that are passed to the player.
-  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil) {
+  ///   - allowIDFA:   Allow IDFA Collection. Defaults true
+  public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil, cookies: [HTTPCookie]? = nil,
+              allowIDFA: Bool = true) {
     super.init(nibName: nil, bundle: nil)
+    if allowIDFA {
+      deviceIdentifier = advertisingIdentifier()
+    }
+    if parameters.contains(where: { $0.key == DMPlayerViewController.loggerParameterKey }) {
+      loggerEnabled = true
+    }
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies)
   }
   
@@ -80,6 +92,9 @@ open class DMPlayerViewController: UIViewController {
     pause()
     webView.stopLoading()
     webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
+    if loggerEnabled {
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.consoleHandlerEvent)
+    }
   }
   
   /// Load a video with ID and optional OAuth token
@@ -169,9 +184,20 @@ open class DMPlayerViewController: UIViewController {
     }
     controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     controller.add(Trampoline(delegate: self), name: DMPlayerViewController.messageHandlerEvent)
+    if loggerEnabled {
+        controller.addUserScript(WKUserScript(source: consoleHandler(), injectionTime: .atDocumentStart, forMainFrameOnly: false))
+        controller.add(Trampoline(delegate: self), name: DMPlayerViewController.consoleHandlerEvent)
+    }
     return controller
   }
   
+  private func consoleHandler() -> String {
+    var source = "window.console.log = function(...args) {"
+    source += "window.webkit.messageHandlers.\(DMPlayerViewController.consoleHandlerEvent).postMessage(args);"
+    source += "};"
+    return source
+  }
+    
   private func eventHandler() -> String {
     var source = "window.dmpNativeBridge = {"
     source += "triggerEvent: function(data) {"
@@ -197,8 +223,15 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
       URLQueryItem(name: "webkit-playsinline", value: "1")
     ]
+    
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
     items.append(contentsOf: parameterItems)
+    
+    if let deviceIdentifier = deviceIdentifier {
+      items.append(URLQueryItem(name: "ads_device_id", value: deviceIdentifier))
+      items.append(URLQueryItem(name: "ads_device_tracking", value: true.description))
+    }
+    
     components.queryItems = items
     let url = components.url!
     return url
@@ -230,13 +263,10 @@ open class DMPlayerViewController: UIViewController {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
   
-  /// Mute playback
   open func mute() {
     webView.evaluateJavaScript("player.mute()", completionHandler: nil)
   }
 
-  
-  /// Unmute playback
   open func unmute() {
     webView.evaluateJavaScript("player.unmute()", completionHandler: nil)
   }
@@ -246,8 +276,12 @@ open class DMPlayerViewController: UIViewController {
 extension DMPlayerViewController: WKScriptMessageHandler {
  
   open func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-    guard let event = EventParser.parseEvent(from: message.body) else { return }
-    delegate?.player(self, didReceiveEvent: event)
+    if message.name == DMPlayerViewController.consoleHandlerEvent {
+      print(message.body)
+    } else {
+      guard let event = EventParser.parseEvent(from: message.body) else { return }
+      delegate?.player(self, didReceiveEvent: event)
+    }
   }
   
 }
@@ -319,5 +353,23 @@ extension DMPlayerViewController: WKUIDelegate {
     return nil
   }
   
+}
+
+extension DMPlayerViewController {
+    
+    fileprivate func advertisingIdentifier() -> String? {
+        let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
+        let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
+        if canTrack {
+            #if swift(>=4.0)
+                return advertisingIdentifier.uuidString
+            #else
+                return advertisingIdentifier?.uuidString
+            #endif
+        } else {
+            return nil
+        }
+    }
+    
 }
 
