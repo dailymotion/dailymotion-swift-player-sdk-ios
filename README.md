@@ -3,11 +3,12 @@
 [![Build Status](https://www.bitrise.io/app/61743b2a9a9a22b7/status.svg?token=N-WhdHZx9J3uFo8ZCqsXNw&branch=develop)](https://www.bitrise.io/app/61743b2a9a9a22b7)
 [![Version](https://img.shields.io/cocoapods/v/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
 [![License](https://img.shields.io/cocoapods/l/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
+[![Swift](https://img.shields.io/badge/swift--version-4.0-blue.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
 [![Platform](https://img.shields.io/cocoapods/p/DailymotionPlayerSDK.svg?style=flat)](http://cocoapods.org/pods/DailymotionPlayerSDK)
 
 ## Requirements
 - Xcode 8 and later
-- Swift 3
+- Swift 4
 - iOS 8+
 
 **Note: this SDK is using IDFA collection (will be asked by Apple in iTunes Connect when you will submit your app in the store). You can still disable it if you really need to when instantiating `DMPlayerViewController`.**
