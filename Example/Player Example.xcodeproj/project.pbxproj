@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		582D522DB3420A8043F4828F /* Pods_Player_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */; };
+		81A56A78A20A55C47040CA05 /* Pods_DailymotionPlayerSDKUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9311CA8B58C4B10A67278EDE /* Pods_DailymotionPlayerSDKUITests.framework */; };
 		942FEE1C1E22787A00D3E65F /* ShareActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942FEE1B1E22787A00D3E65F /* ShareActivityItemProvider.swift */; };
 		9469C7DF1E22694600F4D389 /* UIView+DMAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */; };
 		946C6D7F1DEF19B20007A994 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C6D7E1DEF19B20007A994 /* AppDelegate.swift */; };
@@ -15,12 +16,25 @@
 		946C6D841DEF19B20007A994 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 946C6D821DEF19B20007A994 /* Main.storyboard */; };
 		946C6D861DEF19B20007A994 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 946C6D851DEF19B20007A994 /* Assets.xcassets */; };
 		946C6D891DEF19B20007A994 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 946C6D871DEF19B20007A994 /* LaunchScreen.storyboard */; };
+		F40EAACC2062ACF800CD1081 /* DailymotionPlayerSDKUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40EAACB2062ACF800CD1081 /* DailymotionPlayerSDKUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F40EAACE2062ACF800CD1081 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 946C6D731DEF19B20007A994 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 946C6D7A1DEF19B20007A994;
+			remoteInfo = "Player Example";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Player_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A1C68F7EF4F5ACA3E62FC0D /* Pods-Player Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.debug.xcconfig"; sourceTree = "<group>"; };
 		1C1F1012B3D98FFFB1AAE7E2 /* Pods-Player Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.release.xcconfig"; sourceTree = "<group>"; };
+		9108E281952A64B10C5FE210 /* Pods-DailymotionPlayerSDKUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailymotionPlayerSDKUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DailymotionPlayerSDKUITests/Pods-DailymotionPlayerSDKUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9311CA8B58C4B10A67278EDE /* Pods_DailymotionPlayerSDKUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DailymotionPlayerSDKUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		942FEE1B1E22787A00D3E65F /* ShareActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareActivityItemProvider.swift; sourceTree = "<group>"; };
 		9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+DMAdditions.swift"; sourceTree = "<group>"; };
 		946C6D7B1DEF19B20007A994 /* Player Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Player Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -30,6 +44,10 @@
 		946C6D851DEF19B20007A994 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		946C6D881DEF19B20007A994 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		946C6D8A1DEF19B20007A994 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B662AF97E8630F59A6B44EA0 /* Pods-DailymotionPlayerSDKUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DailymotionPlayerSDKUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-DailymotionPlayerSDKUITests/Pods-DailymotionPlayerSDKUITests.release.xcconfig"; sourceTree = "<group>"; };
+		F40EAAC92062ACF800CD1081 /* DailymotionPlayerSDKUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DailymotionPlayerSDKUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F40EAACB2062ACF800CD1081 /* DailymotionPlayerSDKUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailymotionPlayerSDKUITests.swift; sourceTree = "<group>"; };
+		F40EAACD2062ACF800CD1081 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +59,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F40EAAC62062ACF800CD1081 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81A56A78A20A55C47040CA05 /* Pods_DailymotionPlayerSDKUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -49,6 +75,8 @@
 			children = (
 				1A1C68F7EF4F5ACA3E62FC0D /* Pods-Player Example.debug.xcconfig */,
 				1C1F1012B3D98FFFB1AAE7E2 /* Pods-Player Example.release.xcconfig */,
+				9108E281952A64B10C5FE210 /* Pods-DailymotionPlayerSDKUITests.debug.xcconfig */,
+				B662AF97E8630F59A6B44EA0 /* Pods-DailymotionPlayerSDKUITests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -57,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				946C6D7D1DEF19B20007A994 /* Player Example */,
+				F40EAACA2062ACF800CD1081 /* DailymotionPlayerSDKUITests */,
 				946C6D7C1DEF19B20007A994 /* Products */,
 				0FD816CB218258406566D7A8 /* Pods */,
 				DFEDA7195453714CF7376B85 /* Frameworks */,
@@ -67,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				946C6D7B1DEF19B20007A994 /* Player Example.app */,
+				F40EAAC92062ACF800CD1081 /* DailymotionPlayerSDKUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,8 +120,18 @@
 			isa = PBXGroup;
 			children = (
 				0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */,
+				9311CA8B58C4B10A67278EDE /* Pods_DailymotionPlayerSDKUITests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F40EAACA2062ACF800CD1081 /* DailymotionPlayerSDKUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F40EAACB2062ACF800CD1081 /* DailymotionPlayerSDKUITests.swift */,
+				F40EAACD2062ACF800CD1081 /* Info.plist */,
+			);
+			path = DailymotionPlayerSDKUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -117,13 +157,34 @@
 			productReference = 946C6D7B1DEF19B20007A994 /* Player Example.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F40EAAC82062ACF800CD1081 /* DailymotionPlayerSDKUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F40EAAD22062ACF800CD1081 /* Build configuration list for PBXNativeTarget "DailymotionPlayerSDKUITests" */;
+			buildPhases = (
+				9329A11E5745EA7B191C0916 /* [CP] Check Pods Manifest.lock */,
+				F40EAAC52062ACF800CD1081 /* Sources */,
+				F40EAAC62062ACF800CD1081 /* Frameworks */,
+				F40EAAC72062ACF800CD1081 /* Resources */,
+				23809D1D998A56633DA52183 /* [CP] Embed Pods Frameworks */,
+				163927EC7C88136991B4FF90 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F40EAACF2062ACF800CD1081 /* PBXTargetDependency */,
+			);
+			name = DailymotionPlayerSDKUITests;
+			productName = DailymotionPlayerSDKUITests;
+			productReference = F40EAAC92062ACF800CD1081 /* DailymotionPlayerSDKUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		946C6D731DEF19B20007A994 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0810;
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Dailymotion;
 				TargetAttributes = {
@@ -131,6 +192,12 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = 2QS9CREZT2;
 						ProvisioningStyle = Automatic;
+					};
+					F40EAAC82062ACF800CD1081 = {
+						CreatedOnToolsVersion = 9.2;
+						DevelopmentTeam = 2QS9CREZT2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 946C6D7A1DEF19B20007A994;
 					};
 				};
 			};
@@ -148,6 +215,7 @@
 			projectRoot = "";
 			targets = (
 				946C6D7A1DEF19B20007A994 /* Player Example */,
+				F40EAAC82062ACF800CD1081 /* DailymotionPlayerSDKUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -160,6 +228,13 @@
 				946C6D891DEF19B20007A994 /* LaunchScreen.storyboard in Resources */,
 				946C6D861DEF19B20007A994 /* Assets.xcassets in Resources */,
 				946C6D841DEF19B20007A994 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F40EAAC72062ACF800CD1081 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +259,39 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		163927EC7C88136991B4FF90 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DailymotionPlayerSDKUITests/Pods-DailymotionPlayerSDKUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		23809D1D998A56633DA52183 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-DailymotionPlayerSDKUITests/Pods-DailymotionPlayerSDKUITests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/DailymotionPlayerSDK/DailymotionPlayerSDK.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DailymotionPlayerSDK.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-DailymotionPlayerSDKUITests/Pods-DailymotionPlayerSDKUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		43501A99B1BE2FA87DF50097 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,6 +308,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9329A11E5745EA7B191C0916 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DailymotionPlayerSDKUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CEAD1AA5AAC740A9FA120056 /* [CP] Copy Pods Resources */ = {
@@ -231,7 +357,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F40EAAC52062ACF800CD1081 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F40EAACC2062ACF800CD1081 /* DailymotionPlayerSDKUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F40EAACF2062ACF800CD1081 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 946C6D7A1DEF19B20007A994 /* Player Example */;
+			targetProxy = F40EAACE2062ACF800CD1081 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		946C6D821DEF19B20007A994 /* Main.storyboard */ = {
@@ -376,6 +518,62 @@
 			};
 			name = Release;
 		};
+		F40EAAD02062ACF800CD1081 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9108E281952A64B10C5FE210 /* Pods-DailymotionPlayerSDKUITests.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2QS9CREZT2;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = DailymotionPlayerSDKUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailymotion.DailymotionPlayerSDKUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Player Example";
+			};
+			name = Debug;
+		};
+		F40EAAD12062ACF800CD1081 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B662AF97E8630F59A6B44EA0 /* Pods-DailymotionPlayerSDKUITests.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2QS9CREZT2;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = DailymotionPlayerSDKUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailymotion.DailymotionPlayerSDKUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Player Example";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -393,6 +591,15 @@
 			buildConfigurations = (
 				946C6D8E1DEF19B20007A994 /* Debug */,
 				946C6D8F1DEF19B20007A994 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F40EAAD22062ACF800CD1081 /* Build configuration list for PBXNativeTarget "DailymotionPlayerSDKUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F40EAAD02062ACF800CD1081 /* Debug */,
+				F40EAAD12062ACF800CD1081 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,7 +1,10 @@
+platform :ios, '8.0'
+use_frameworks!
+
 target 'Player Example' do
-  platform :ios, '8.0'
-  use_frameworks!
-
   pod 'DailymotionPlayerSDK', :path => '../'
+end
 
+target 'DailymotionPlayerSDKUITests' do
+  pod 'DailymotionPlayerSDK', :path => '../'
 end
