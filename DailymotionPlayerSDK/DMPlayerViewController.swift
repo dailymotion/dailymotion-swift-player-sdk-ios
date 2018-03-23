@@ -26,11 +26,11 @@ open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
   fileprivate static let version = "3.7.2"
-  fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   fileprivate static let messageHandlerEvent = "triggerEvent"
   fileprivate static let consoleHandlerEvent = "consoleEvent"
   fileprivate static let loggerParameterKey = "logger"
+  public static let viewIdentifier = "Dailymotion Player View" //public for ui testing
   
   private var webView: WKWebView!
   private var baseUrl: URL!
@@ -83,6 +83,9 @@ open class DMPlayerViewController: UIViewController {
     self.baseUrl = baseUrl ?? DMPlayerViewController.defaultUrl
     webView = newWebView(cookies: cookies)
     view = webView
+    view.accessibilityIdentifier = DMPlayerViewController.viewIdentifier
+    view.accessibilityTraits = UIAccessibilityTraitNone
+    
     let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
