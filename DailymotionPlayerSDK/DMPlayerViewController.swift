@@ -101,14 +101,18 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter videoId: The video's XID
   /// - Parameter payload: An optional payload to pass to the load
-  open func load(videoId: String, payload: [String: Any]? = nil) {
+  open func load(videoId: String, payload: [String: Any]? = nil, completion: (() -> ())? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
       self.payloadToLoad = payload
       return
     }
+    
     let js = buildLoadString(videoId: videoId, payload: payload != nil ? convertPayloadToString(payload: payload!) : nil)
-    webView.evaluateJavaScript(js, completionHandler: nil)
+    
+    webView.evaluateJavaScript(js) { _,_ in
+      completion?()
+    }
   }
   
   private func convertPayloadToString(payload: [String: Any]) -> String? {
