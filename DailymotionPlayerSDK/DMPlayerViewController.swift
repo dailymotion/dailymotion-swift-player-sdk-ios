@@ -125,10 +125,14 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter prop: The property name
   /// - Parameter data: The data value to set
-  open func setProp(_ prop: String, data: [String: Any]) {
+  open func setProp(_ prop: String, data: [String: Any], completion: (() -> ())? = nil) {
     guard isInitialized, let converted = convertPayloadToString(payload: data) else { return }
+    
     let js = "player.setProp('\(prop)', \(converted))"
-    webView.evaluateJavaScript(js, completionHandler: nil)
+    
+    webView.evaluateJavaScript(js) { _,_ in
+      completion?()
+    }
   }
   
   /// Construct the player load JS string
@@ -247,9 +251,12 @@ open class DMPlayerViewController: UIViewController {
     notifyPlayerApi(method: "controls", argument: hasControls)
   }
   
-  final public func notifyPlayerApi(method: String, argument: String? = nil) {
+  final public func notifyPlayerApi(method: String, argument: String? = nil, completion: (() -> ())? = nil) {
     let playerArgument = argument != nil ? argument! : "null"
-    webView.evaluateJavaScript("player.api('\(method)', \(playerArgument))", completionHandler: nil)
+    
+    webView.evaluateJavaScript("player.api('\(method)', \(playerArgument))") { _,_ in
+      completion?()
+    }
   }
   
   open func toggleFullscreen() {
@@ -268,12 +275,16 @@ open class DMPlayerViewController: UIViewController {
     notifyPlayerApi(method: "seek", argument: "\(to)")
   }
   
-  open func mute() {
-    webView.evaluateJavaScript("player.mute()", completionHandler: nil)
+  open func mute(completion: (() -> ())? = nil) {
+    webView.evaluateJavaScript("player.mute()") { _,_ in
+      completion?()
+    }
   }
 
-  open func unmute() {
-    webView.evaluateJavaScript("player.unmute()", completionHandler: nil)
+  open func unmute(completion: (() -> ())? = nil) {
+    webView.evaluateJavaScript("player.unmute()") { _,_ in
+      completion?()
+    }
   }
   
 }
