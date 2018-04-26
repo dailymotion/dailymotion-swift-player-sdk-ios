@@ -25,7 +25,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.3"
+  fileprivate static let version = "3.7.4"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   fileprivate static let messageHandlerEvent = "triggerEvent"
@@ -230,7 +230,9 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "objc_sdk_version", value: DMPlayerViewController.version),
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
       URLQueryItem(name: "client_type", value: "iosapp"),
-      URLQueryItem(name: "webkit-playsinline", value: "1")
+      URLQueryItem(name: "webkit-playsinline", value: "1"),
+      URLQueryItem(name: "queue-enable", value: "0")
+      
     ]
     
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
