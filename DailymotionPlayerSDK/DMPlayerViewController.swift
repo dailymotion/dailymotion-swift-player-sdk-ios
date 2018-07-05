@@ -25,7 +25,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.4"
+  fileprivate static let version = "3.7.5"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   fileprivate static let messageHandlerEvent = "triggerEvent"
@@ -38,7 +38,7 @@ open class DMPlayerViewController: UIViewController {
   private var loggerEnabled: Bool = false
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
-  fileprivate var payloadToLoad: [String: Any]?
+  fileprivate var paramsToLoad: String?
   
   open weak var delegate: DMPlayerViewControllerDelegate?
 
@@ -97,25 +97,38 @@ open class DMPlayerViewController: UIViewController {
     }
   }
   
-  /// Load a video with ID and optional OAuth token
+  /// Load a video with ID optional Player parameters
   ///
   /// - Parameter videoId: The video's XID
   /// - Parameter payload: An optional payload to pass to the load
-  open func load(videoId: String, payload: [String: Any]? = nil, completion: (() -> ())? = nil) {
+  @available(*, deprecated)
+  open func load(videoId: String, payload: [String: Any]?, completion: (() -> ())? = nil) {
+    var params: String? = nil
+    if let payload = payload {
+      params = convertDictionaryToString(payload: payload)
+    }
+    load(videoId: videoId, params: params, completion: completion)
+  }
+  
+  /// Load a video with ID and optional Player parameters
+  ///
+  /// - Parameter videoId: video's XID
+  /// - Parameter params: (Optional) String encoded Player parameters
+  open func load(videoId: String, params: String? = nil, completion: (() -> ())? = nil) {
     guard isInitialized else {
       self.videoIdToLoad = videoId
-      self.payloadToLoad = payload
+      self.paramsToLoad = params
       return
     }
     
-    let js = buildLoadString(videoId: videoId, payload: payload != nil ? convertPayloadToString(payload: payload!) : nil)
+    let js = buildLoadString(videoId: videoId, params: params)
     
     webView.evaluateJavaScript(js) { _,_ in
       completion?()
     }
   }
   
-  private func convertPayloadToString(payload: [String: Any]) -> String? {
+  private func convertDictionaryToString(payload: [String: Any]) -> String? {
     guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
           let string = String(data: data, encoding: .utf8) else { return nil }
     return string
@@ -125,26 +138,36 @@ open class DMPlayerViewController: UIViewController {
   ///
   /// - Parameter prop: The property name
   /// - Parameter data: The data value to set
+  @available(*, deprecated)
   open func setProp(_ prop: String, data: [String: Any], completion: (() -> ())? = nil) {
-    guard isInitialized, let converted = convertPayloadToString(payload: data) else { return }
+    let value = convertDictionaryToString(payload: data)
+    setProp(prop, value: value)
+  }
+  
+  /// Set a player property
+  ///
+  /// - Parameter prop: property name
+  /// - Parameter value: property value
+  @nonobjc
+  open func setProp(_ prop: String, value: String?, completion: (() -> ())? = nil) {
+    guard isInitialized, let value = value else { return }
     
-    let js = "player.setProp('\(prop)', \(converted))"
-    
+    let js = "player.setProp('\(prop)', \(value))"
     webView.evaluateJavaScript(js) { _,_ in
       completion?()
     }
   }
   
-  /// Construct the player load JS string
+  /// Build the player load JS string
   ///
-  /// - Parameter videoId: The video's XID
-  /// - Parameter payload: An optional payload to pass to the load
-  /// - Returns: The constructed string
-  private func buildLoadString(videoId: String, payload: String?) -> String {
+  /// - Parameter videoId: Video's XID
+  /// - Parameter params: (Optional) params to pass during the load
+  /// - Returns: A JS string command
+  private func buildLoadString(videoId: String, params: String?) -> String {
     var builder: [String] = []
     builder.append("player.load('\(videoId)'")
-    if let payload = payload {
-      builder.append(", \(payload)")
+    if let params = params {
+      builder.append(", \(params)")
     }
     builder.append(")")
     return builder.joined()
@@ -344,9 +367,9 @@ extension DMPlayerViewController: WKNavigationDelegate {
     isInitialized = true
     
     if let videoIdToLoad = videoIdToLoad {
-      load(videoId: videoIdToLoad, payload: payloadToLoad)
+      load(videoId: videoIdToLoad, params: paramsToLoad)
       self.videoIdToLoad = nil
-      self.payloadToLoad = nil
+      self.paramsToLoad = nil
     }
     delegate?.playerDidInitialize(self)
   }
