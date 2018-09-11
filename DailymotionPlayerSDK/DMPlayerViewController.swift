@@ -25,7 +25,7 @@ public enum PlayerEvent {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.5"
+  fileprivate static let version = "3.7.6"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   fileprivate static let messageHandlerEvent = "triggerEvent"
@@ -41,7 +41,7 @@ open class DMPlayerViewController: UIViewController {
   fileprivate var paramsToLoad: String?
   
   open weak var delegate: DMPlayerViewControllerDelegate?
-
+  
   override open var shouldAutorotate: Bool {
     return true
   }
@@ -87,13 +87,13 @@ open class DMPlayerViewController: UIViewController {
     webView.load(request)
     webView.navigationDelegate = self
   }
-    
+  
   deinit {
     pause()
     webView.stopLoading()
     webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
     if loggerEnabled {
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.consoleHandlerEvent)
+      webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.consoleHandlerEvent)
     }
   }
   
@@ -130,7 +130,7 @@ open class DMPlayerViewController: UIViewController {
   
   private func convertDictionaryToString(payload: [String: Any]) -> String? {
     guard let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
-          let string = String(data: data, encoding: .utf8) else { return nil }
+      let string = String(data: data, encoding: .utf8) else { return nil }
     return string
   }
   
@@ -216,8 +216,8 @@ open class DMPlayerViewController: UIViewController {
     controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     controller.add(Trampoline(delegate: self), name: DMPlayerViewController.messageHandlerEvent)
     if loggerEnabled {
-        controller.addUserScript(WKUserScript(source: consoleHandler(), injectionTime: .atDocumentStart, forMainFrameOnly: false))
-        controller.add(Trampoline(delegate: self), name: DMPlayerViewController.consoleHandlerEvent)
+      controller.addUserScript(WKUserScript(source: consoleHandler(), injectionTime: .atDocumentStart, forMainFrameOnly: false))
+      controller.add(Trampoline(delegate: self), name: DMPlayerViewController.consoleHandlerEvent)
     }
     return controller
   }
@@ -228,7 +228,7 @@ open class DMPlayerViewController: UIViewController {
     source += "};"
     return source
   }
-    
+  
   private func eventHandler() -> String {
     var source = "window.dmpNativeBridge = {"
     source += "triggerEvent: function(data) {"
@@ -270,7 +270,7 @@ open class DMPlayerViewController: UIViewController {
     let url = components.url!
     return url
   }
-
+  
   open func toggleControls(show: Bool) {
     let hasControls = show ? "1" : "0"
     notifyPlayerApi(method: "controls", argument: hasControls)
@@ -287,7 +287,7 @@ open class DMPlayerViewController: UIViewController {
   open func toggleFullscreen() {
     notifyPlayerApi(method: "notifyFullscreenChanged")
   }
-
+  
   open func play() {
     notifyPlayerApi(method: "play")
   }
@@ -305,7 +305,7 @@ open class DMPlayerViewController: UIViewController {
       completion?()
     }
   }
-
+  
   open func unmute(completion: (() -> ())? = nil) {
     webView.evaluateJavaScript("player.unmute()") { _,_ in
       completion?()
@@ -315,12 +315,25 @@ open class DMPlayerViewController: UIViewController {
 }
 
 extension DMPlayerViewController: WKScriptMessageHandler {
- 
+  
   open func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
     if message.name == DMPlayerViewController.consoleHandlerEvent {
       print(message.body)
     } else {
       guard let event = EventParser.parseEvent(from: message.body) else { return }
+      switch event {
+      case .namedEvent(let name, _) where name == "apiready":
+        isInitialized = true
+        
+        if let videoIdToLoad = videoIdToLoad {
+          load(videoId: videoIdToLoad, params: paramsToLoad)
+          self.videoIdToLoad = nil
+          self.paramsToLoad = nil
+        }
+        delegate?.playerDidInitialize(self)
+      default:
+        break
+      }
       delegate?.player(self, didReceiveEvent: event)
     }
   }
@@ -347,31 +360,20 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
 extension DMPlayerViewController: WKNavigationDelegate {
   
   open func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+                    decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     guard let url = navigationAction.request.url , navigationAction.navigationType == .linkActivated else {
       decisionHandler(.allow)
       return
     }
     if !url.absoluteString.contains(DMPlayerViewController.pathPrefix) {
       if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-         let scheme = components.scheme, scheme == "http" || scheme == "https" {
+        let scheme = components.scheme, scheme == "http" || scheme == "https" {
         delegate?.player(self, openUrl: url)
         decisionHandler(.cancel)
         return
       }
     }
     decisionHandler(.allow)
-  }
-  
-  open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    isInitialized = true
-    
-    if let videoIdToLoad = videoIdToLoad {
-      load(videoId: videoIdToLoad, params: paramsToLoad)
-      self.videoIdToLoad = nil
-      self.paramsToLoad = nil
-    }
-    delegate?.playerDidInitialize(self)
   }
   
   open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
@@ -397,20 +399,20 @@ extension DMPlayerViewController: WKUIDelegate {
 }
 
 extension DMPlayerViewController {
-    
-    fileprivate func advertisingIdentifier() -> String? {
-        let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
-        let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
-        if canTrack {
-            #if swift(>=4.0)
-                return advertisingIdentifier.uuidString
-            #else
-                return advertisingIdentifier?.uuidString
-            #endif
-        } else {
-            return nil
-        }
+  
+  fileprivate func advertisingIdentifier() -> String? {
+    let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
+    let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
+    if canTrack {
+      #if swift(>=4.0)
+      return advertisingIdentifier.uuidString
+      #else
+      return advertisingIdentifier?.uuidString
+      #endif
+    } else {
+      return nil
     }
-    
+  }
+  
 }
 
