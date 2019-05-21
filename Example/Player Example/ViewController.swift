@@ -23,7 +23,7 @@ class ViewController: UIViewController {
       "sharing-action": "trigger_event"
     ]
     
-    let controller = DMPlayerViewController(parameters: parameters)
+    let controller = DMPlayerViewController(parameters: parameters, allowPiP: false)
     controller.delegate = self
     return controller
   }()
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
   }
   
   private func setupPlayerViewController() {
-    addChildViewController(playerViewController)
+    addChild(playerViewController)
     
     let view = playerViewController.view!
     containerView.addSubview(view)
