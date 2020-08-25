@@ -105,4 +105,29 @@ final class EventParserTests: XCTestCase {
     }
   }
   
+  func testCorrectErrorEvent() {
+    let event = parseEvent(from: "event=error&code=CODE&title=TITLE&message=MESSAGE")!
+    
+    switch event {
+    case .errorEvent(let error):
+      XCTAssertEqual(error.code, "CODE")
+      XCTAssertEqual(error.title, "TITLE")
+      XCTAssertEqual(error.message, "MESSAGE")
+      
+    default:
+      assertionFailure()
+    }
+  }
+  
+  func testErrorEventWithoutCodeFalbacksToNamedEvent() {
+    let event = parseEvent(from: "event=error&title=TITLE&message=MESSAGE")!
+    
+    switch event {
+    case .namedEvent(let name, let data):
+      XCTAssertEqual(name, "error")
+      XCTAssertNil(data)
+    default:
+      assertionFailure()
+    }
+  }
 }
