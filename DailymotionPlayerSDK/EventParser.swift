@@ -50,6 +50,10 @@ final class EventParser {
     
     switch EventName(rawValue: event) {
     case .none:
+      if let time = parseTime(from: eventAndParameters) {
+        return .timeEvent(name: event, time: time)
+      }
+      
       return .namedEvent(name: event, data: parseData(from: eventAndParameters))
     case .some(let eventName):
       switch eventName {

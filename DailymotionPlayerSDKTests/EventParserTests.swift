@@ -34,6 +34,17 @@ final class EventParserTests: XCTestCase {
     }
   }
   
+  func testParseTimeWithoutKnownEventName() {
+    let event = parseEvent(from: "event=toto&time=19.28")!
+    
+    switch event {
+    case .timeEvent(_, let time):
+      XCTAssertEqual(time, 19.28)
+    default:
+      assertionFailure()
+    }
+  }
+  
   func testParseEventNamedEventKO() {
     if let _ = EventParser.parseEvent(from: "event3=controlschange&controls=true") {
       assertionFailure()
@@ -52,6 +63,8 @@ final class EventParserTests: XCTestCase {
       break
     }
   }
+  
+
   
   func testParseAdditionalEventData() {
     let event = parseEvent(from: "event=share_requested&url=https%3A%2F%2Fwww.dailymotion.com%2Fvideo%2Fx4r5udv_midnight-sun-iceland_travel&shortUrl=https%3A%2F%2Fdai.ly%2Fx4r5udv")!
@@ -119,7 +132,7 @@ final class EventParserTests: XCTestCase {
     }
   }
   
-  func testErrorEventWithoutCodeFalbacksToNamedEvent() {
+  func testErrorEventWithoutCodeFallbacksToNamedEvent() {
     let event = parseEvent(from: "event=error&title=TITLE&message=MESSAGE")!
     
     switch event {
