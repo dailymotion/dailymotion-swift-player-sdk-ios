@@ -34,42 +34,19 @@ final class EventParser {
     }
   }
   
-  private enum EventName: String {
-    case durationchange
-    case progress
-    case timeupdate
-    case error
-  }
-
   static func parseEvent(from: Any) -> PlayerEvent? {
     guard let message = from as? String else { return nil }
     
     let eventAndParameters = parseEventAndParameters(from: message)
-
+    
     guard let event = eventAndParameters[Keys.event] else { return nil }
     
-    switch EventName(rawValue: event) {
-    case .none:
-      if let time = parseTime(from: eventAndParameters) {
-        return .timeEvent(name: event, time: time)
-      }
-      
+    if let time = parseTime(from: eventAndParameters) {
+      return .timeEvent(name: event, time: time)
+    } else if let error = parseError(from: eventAndParameters) {
+      return .errorEvent(error: error)
+    } else {
       return .namedEvent(name: event, data: parseData(from: eventAndParameters))
-    case .some(let eventName):
-      switch eventName {
-      case .durationchange, .progress, .timeupdate:
-        if let time = parseTime(from: eventAndParameters) {
-           return .timeEvent(name: event, time: time)
-        }
-        
-        return .namedEvent(name: eventName.rawValue, data: nil)
-      case .error:
-        if let error = parseError(from: eventAndParameters) {
-          return .errorEvent(error: error)
-        }
-        
-        return .namedEvent(name: eventName.rawValue, data: nil)
-      }
     }
   }
   

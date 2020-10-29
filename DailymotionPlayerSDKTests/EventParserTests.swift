@@ -138,7 +138,7 @@ final class EventParserTests: XCTestCase {
     switch event {
     case .namedEvent(let name, let data):
       XCTAssertEqual(name, "error")
-      XCTAssertNil(data)
+      XCTAssertNotNil(data)
     default:
       assertionFailure()
     }
