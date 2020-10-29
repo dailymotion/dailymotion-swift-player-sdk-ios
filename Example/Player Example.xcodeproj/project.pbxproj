@@ -106,7 +106,6 @@
 				946C6D781DEF19B20007A994 /* Frameworks */,
 				946C6D791DEF19B20007A994 /* Resources */,
 				43501A99B1BE2FA87DF50097 /* [CP] Embed Pods Frameworks */,
-				CEAD1AA5AAC740A9FA120056 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -191,7 +190,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/DailymotionPlayerSDK/DailymotionPlayerSDK.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -200,22 +199,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CEAD1AA5AAC740A9FA120056 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Player Example/Pods-Player Example-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
