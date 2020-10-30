@@ -79,7 +79,7 @@ extension VideoViewController: DMPlayerViewControllerDelegate {
   // The delegate has 4 mandatory functions
 
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent) {
-    // Sends player events of either .namedEvent(name: String, data: [String: String]?) or .timeEvent(name: String, time: Double)
+    // Sends player events of either .namedEvent(name: String, data: [String: String]?), .timeEvent(name: String, time: Double) or .errorEvent(error: PlayerError)
   }
 
   func player(_ player: DMPlayerViewController, openUrl url: URL) {

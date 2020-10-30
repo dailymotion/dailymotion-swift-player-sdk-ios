@@ -15,13 +15,6 @@ public protocol DMPlayerViewControllerDelegate: class {
   
 }
 
-public enum PlayerEvent {
-  
-  case timeEvent(name: String, time: Double)
-  case namedEvent(name : String, data: [String: String]?)
-  
-}
-
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
