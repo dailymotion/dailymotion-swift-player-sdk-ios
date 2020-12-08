@@ -24,6 +24,8 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let messageHandlerEvent = "triggerEvent"
   fileprivate static let consoleHandlerEvent = "consoleEvent"
   fileprivate static let loggerParameterKey = "logger"
+  private static let tcStringKey = "IABTCF_TCString"
+  private static let tcStringCookieName = "dm-euconsent-v2"
   
   private var webView: WKWebView!
   private var baseUrl: URL!
@@ -56,6 +58,9 @@ open class DMPlayerViewController: UIViewController {
     if parameters.contains(where: { $0.key == DMPlayerViewController.loggerParameterKey }) {
       loggerEnabled = true
     }
+
+    setConsentCookie()
+
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies, allowPiP: allowPiP)
   }
   
@@ -115,7 +120,9 @@ open class DMPlayerViewController: UIViewController {
       completion?()
       return
     }
-    
+
+    setConsentCookie()
+
     let js = buildLoadString(videoId: videoId, params: params)
     
     webView.evaluateJavaScript(js) { _,_ in
@@ -409,6 +416,25 @@ extension DMPlayerViewController {
       return nil
     }
   }
-  
+
+  private func setConsentCookie() {
+    if let tcString = UserDefaults.standard.string(forKey: DMPlayerViewController.tcStringKey) {
+      var cookieProperties: [HTTPCookiePropertyKey: Any] = [
+        .name: DMPlayerViewController.tcStringCookieName,
+        .value: tcString,
+        .domain: "dailymotion.com",
+        .path: "/",
+        .secure: true
+      ]
+      if let expiresDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) {
+        cookieProperties[.expires] = expiresDate
+      }
+
+      guard let cookie = HTTPCookie(properties: cookieProperties) else { return }
+
+      HTTPCookieStorage.shared.setCookie(cookie)
+    }
+  }
+
 }
 
