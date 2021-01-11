@@ -59,7 +59,11 @@ open class DMPlayerViewController: UIViewController {
       loggerEnabled = true
     }
 
-    setConsentCookie()
+    var cookies: [HTTPCookie] = []
+    cookies.append(contentsOf: cookies)
+    if let consentCookie = buildConsentCookie() {
+      cookies.append(consentCookie)
+    }
 
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies, allowPiP: allowPiP)
   }
@@ -417,7 +421,7 @@ extension DMPlayerViewController {
     }
   }
 
-  private func setConsentCookie() {
+  private func buildConsentCookie() -> HTTPCookie? {
     if let tcString = UserDefaults.standard.string(forKey: DMPlayerViewController.tcStringKey) {
       var cookieProperties: [HTTPCookiePropertyKey: Any] = [
         .name: DMPlayerViewController.tcStringCookieName,
@@ -430,11 +434,18 @@ extension DMPlayerViewController {
         cookieProperties[.expires] = expiresDate
       }
 
-      guard let cookie = HTTPCookie(properties: cookieProperties) else { return }
+      return HTTPCookie(properties: cookieProperties)
+    }
 
-      HTTPCookieStorage.shared.setCookie(cookie)
+    return nil
+  }
+
+  private func setConsentCookie() {
+    guard let consentCookie = buildConsentCookie() else { return }
+
+    if #available(iOS 11.0, *) {
+      webView.configuration.websiteDataStore.httpCookieStore.setCookie(consentCookie)
     }
   }
 
 }
-
