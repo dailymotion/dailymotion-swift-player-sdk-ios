@@ -125,12 +125,18 @@ open class DMPlayerViewController: UIViewController {
       return
     }
 
-    setConsentCookie()
+    let js = self.buildLoadString(videoId: videoId, params: params)
 
-    let js = buildLoadString(videoId: videoId, params: params)
-    
-    webView.evaluateJavaScript(js) { _,_ in
-      completion?()
+    if let consentCookie = buildConsentCookie() {
+      setCookie(consentCookie) {
+        self.webView.evaluateJavaScript(js) { _, _ in
+          completion?()
+        }
+      }
+    } else {
+      self.webView.evaluateJavaScript(js) { _, _ in
+        completion?()
+      }
     }
   }
   
@@ -426,7 +432,7 @@ extension DMPlayerViewController {
       var cookieProperties: [HTTPCookiePropertyKey: Any] = [
         .name: DMPlayerViewController.tcStringCookieName,
         .value: tcString,
-        .domain: "dailymotion.com",
+        .domain: ".dailymotion.com",
         .path: "/",
         .secure: true
       ]
@@ -440,11 +446,11 @@ extension DMPlayerViewController {
     return nil
   }
 
-  private func setConsentCookie() {
-    guard let consentCookie = buildConsentCookie() else { return }
-
+  private func setCookie(_ cookie: HTTPCookie, completion: (() -> ())? = nil) {
     if #available(iOS 11.0, *) {
-      webView.configuration.websiteDataStore.httpCookieStore.setCookie(consentCookie)
+      webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
+        completion?()
+      }
     }
   }
 
