@@ -265,7 +265,7 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "api", value: "nativeBridge"),
       URLQueryItem(name: "objc_sdk_version", value: DMPlayerViewController.version),
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
-      URLQueryItem(name: "client_type", value: "iosapp"),
+      URLQueryItem(name: "client_type", value: UIDevice.current.userInterfaceIdiom == .pad ? "ipadosapp" : "iosapp"),
       URLQueryItem(name: "webkit-playsinline", value: "1"),
       URLQueryItem(name: "queue-enable", value: "0")
       
