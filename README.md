@@ -146,6 +146,11 @@ private func updatePlayerSize() {
 
 See the `Example` directory for a working sample of all this in action.
 
+## CMP Compliance
+Starting version 3.8.0, the SDK is fully compatible with third-party CMP (Consent Management Platform). Check https://iabeurope.eu/cmp-list/ for more details.
+
+No additional code is needed to enable this compatibility, when you integrate the SDK the communication with the CMP is handled automatically.
+
 ## License
 
 DailymotionPlayerSDK is available under the MIT license. See the LICENSE file for more info.

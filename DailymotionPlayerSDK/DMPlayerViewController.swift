@@ -24,6 +24,8 @@ open class DMPlayerViewController: UIViewController {
   fileprivate static let messageHandlerEvent = "triggerEvent"
   fileprivate static let consoleHandlerEvent = "consoleEvent"
   fileprivate static let loggerParameterKey = "logger"
+  private static let tcStringKey = "IABTCF_TCString"
+  private static let tcStringCookieName = "dm-euconsent-v2"
   
   private var webView: WKWebView!
   private var baseUrl: URL!
@@ -56,6 +58,13 @@ open class DMPlayerViewController: UIViewController {
     if parameters.contains(where: { $0.key == DMPlayerViewController.loggerParameterKey }) {
       loggerEnabled = true
     }
+
+    var cookies: [HTTPCookie] = []
+    cookies.append(contentsOf: cookies)
+    if let consentCookie = buildConsentCookie() {
+      cookies.append(consentCookie)
+    }
+
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies, allowPiP: allowPiP)
   }
   
@@ -115,11 +124,19 @@ open class DMPlayerViewController: UIViewController {
       completion?()
       return
     }
-    
-    let js = buildLoadString(videoId: videoId, params: params)
-    
-    webView.evaluateJavaScript(js) { _,_ in
-      completion?()
+
+    let js = self.buildLoadString(videoId: videoId, params: params)
+
+    if let consentCookie = buildConsentCookie() {
+      setCookie(consentCookie) {
+        self.webView.evaluateJavaScript(js) { _, _ in
+          completion?()
+        }
+      }
+    } else {
+      self.webView.evaluateJavaScript(js) { _, _ in
+        completion?()
+      }
     }
   }
   
@@ -248,7 +265,7 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "api", value: "nativeBridge"),
       URLQueryItem(name: "objc_sdk_version", value: DMPlayerViewController.version),
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
-      URLQueryItem(name: "client_type", value: "iosapp"),
+      URLQueryItem(name: "client_type", value: UIDevice.current.userInterfaceIdiom == .pad ? "ipadosapp" : "iosapp"),
       URLQueryItem(name: "webkit-playsinline", value: "1"),
       URLQueryItem(name: "queue-enable", value: "0")
       
@@ -409,6 +426,32 @@ extension DMPlayerViewController {
       return nil
     }
   }
-  
-}
 
+  private func buildConsentCookie() -> HTTPCookie? {
+    if let tcString = UserDefaults.standard.string(forKey: DMPlayerViewController.tcStringKey) {
+      var cookieProperties: [HTTPCookiePropertyKey: Any] = [
+        .name: DMPlayerViewController.tcStringCookieName,
+        .value: tcString,
+        .domain: ".dailymotion.com",
+        .path: "/",
+        .secure: true
+      ]
+      if let expiresDate = Calendar.current.date(byAdding: .month, value: 6, to: Date()) {
+        cookieProperties[.expires] = expiresDate
+      }
+
+      return HTTPCookie(properties: cookieProperties)
+    }
+
+    return nil
+  }
+
+  private func setCookie(_ cookie: HTTPCookie, completion: (() -> ())? = nil) {
+    if #available(iOS 11.0, *) {
+      webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
+        completion?()
+      }
+    }
+  }
+
+}

@@ -1,5 +1,5 @@
 PODS:
-  - DailymotionPlayerSDK (3.7.9)
+  - DailymotionPlayerSDK (3.7.11)
 
 DEPENDENCIES:
   - DailymotionPlayerSDK (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  DailymotionPlayerSDK: f0a79d2c7643785a2e93492573bd94847fe031cb
+  DailymotionPlayerSDK: 2c83881e0f266e436d5be69e36cb93cbbdc82e09
 
 PODFILE CHECKSUM: c19d369ebab07d80302f722edcb86bcd803b45ea
 
