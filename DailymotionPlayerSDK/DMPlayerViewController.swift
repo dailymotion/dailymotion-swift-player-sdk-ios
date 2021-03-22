@@ -18,7 +18,7 @@ public protocol DMPlayerViewControllerDelegate: class {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.7.11"
+  fileprivate static let version = "3.8.0"
   fileprivate static let eventName = "dmevent"
   fileprivate static let pathPrefix = "/embed/"
   fileprivate static let messageHandlerEvent = "triggerEvent"
