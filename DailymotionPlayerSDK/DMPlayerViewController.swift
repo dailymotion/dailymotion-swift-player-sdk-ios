@@ -5,6 +5,7 @@
 import UIKit
 import WebKit
 import AdSupport
+import AppTrackingTransparency
 
 public protocol DMPlayerViewControllerDelegate: class {
   
@@ -414,9 +415,15 @@ extension DMPlayerViewController: WKUIDelegate {
 extension DMPlayerViewController {
   
   fileprivate func advertisingIdentifier() -> String? {
-    let canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
-    let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
+    let canTrack: Bool
+    if #available(iOS 14, *) {
+      canTrack =  ATTrackingManager.trackingAuthorizationStatus ==  ATTrackingManager.AuthorizationStatus.authorized
+    } else {
+      canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
+    }
+
     if canTrack {
+      let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
       #if swift(>=4.0)
       return advertisingIdentifier.uuidString
       #else
