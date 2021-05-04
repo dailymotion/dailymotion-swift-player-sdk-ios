@@ -12,6 +12,7 @@ public protocol DMPlayerViewControllerDelegate: class {
   func player(_ player: DMPlayerViewController, openUrl url: URL)
   func playerDidInitialize(_ player: DMPlayerViewController)
   func player(_ player: DMPlayerViewController, didFailToInitializeWithError error: Error)
+  func player(_ player: DMPlayerViewController, didFinish navigation: WKNavigation!)
   
 }
 
@@ -27,7 +28,7 @@ open class DMPlayerViewController: UIViewController {
   private static let tcStringKey = "IABTCF_TCString"
   private static let tcStringCookieName = "dm-euconsent-v2"
   
-  private var webView: WKWebView!
+  public var webView: WKWebView!
   private var baseUrl: URL!
   private var deviceIdentifier: String?
   private var loggerEnabled: Bool = false
@@ -125,7 +126,7 @@ open class DMPlayerViewController: UIViewController {
       return
     }
 
-    let js = self.buildLoadString(videoId: videoId, params: params)
+    let js = self.buildLoadString(videoId: "x80wxwd", params: params)
 
     if let consentCookie = buildConsentCookie() {
       setCookie(consentCookie) {
@@ -334,6 +335,16 @@ extension DMPlayerViewController: WKScriptMessageHandler {
       print(message.body)
     } else {
       guard let event = EventParser.parseEvent(from: message.body) else { return }
+
+      switch event {
+      case .namedEvent(let name, let data):
+        print("===== \(name) \(data)")
+      case .timeEvent(let name, let time):
+        print("===== \(name) \(time)")
+      default:
+        print("unparsed event")
+      }
+
       switch event {
       case .namedEvent(let name, _) where name == "apiready":
         isInitialized = true
@@ -344,6 +355,23 @@ extension DMPlayerViewController: WKScriptMessageHandler {
           self.paramsToLoad = nil
         }
         delegate?.playerDidInitialize(self)
+      case .namedEvent(let name, let data) where name == "ad_start":
+        let script1 = [
+          "omid[url]": "https://vasttester.iabtechlab.com/fixtures/omid/omid-validation-verification-script-v1.js",
+          "omid[vendorKey]": "iabtechlab.com-omid",
+          "omid[params]": "iabtechlab-integrationtest"
+        ]
+//        let script2 = [
+//          "url": "https://s3-us-west-2.amazonaws.com/content.iabtechlab.com/omid-validation-verification-logapi.js",
+//          "vendorKey": "iabtechlab.com-omid",
+//          "params": "iabtechlab-Dailymotion"
+//        ]
+        let testData = try? data!.merging(script1) { (current, _) in current }
+        print("===== \(name)")
+        print("===== \(data)")
+        let newEvent: PlayerEvent = .namedEvent(name: name, data: testData)
+        delegate?.player(self, didReceiveEvent: newEvent)
+        return
       default:
         break
       }
@@ -371,7 +399,11 @@ final class Trampoline: NSObject, WKScriptMessageHandler {
 
 
 extension DMPlayerViewController: WKNavigationDelegate {
-  
+
+  open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    delegate?.player(self, didFinish: navigation)
+  }
+
   open func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     guard let url = navigationAction.request.url , navigationAction.navigationType == .linkActivated else {
