@@ -126,6 +126,8 @@ open class DMPlayerViewController: UIViewController {
       return
     }
 
+    //x5xvext
+    //x80wxwd
     let js = self.buildLoadString(videoId: "x80wxwd", params: params)
 
     if let consentCookie = buildConsentCookie() {
@@ -268,8 +270,8 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
       URLQueryItem(name: "client_type", value: UIDevice.current.userInterfaceIdiom == .pad ? "ipadosapp" : "iosapp"),
       URLQueryItem(name: "webkit-playsinline", value: "1"),
-      URLQueryItem(name: "queue-enable", value: "0")
-      
+      URLQueryItem(name: "queue-enable", value: "0"),
+      URLQueryItem(name: "GK_PV5_OMSDK", value: "1")
     ]
     
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
@@ -355,23 +357,6 @@ extension DMPlayerViewController: WKScriptMessageHandler {
           self.paramsToLoad = nil
         }
         delegate?.playerDidInitialize(self)
-      case .namedEvent(let name, let data) where name == "ad_start":
-        let script1 = [
-          "omid[url]": "https://vasttester.iabtechlab.com/fixtures/omid/omid-validation-verification-script-v1.js",
-          "omid[vendorKey]": "iabtechlab.com-omid",
-          "omid[params]": "iabtechlab-integrationtest"
-        ]
-//        let script2 = [
-//          "url": "https://s3-us-west-2.amazonaws.com/content.iabtechlab.com/omid-validation-verification-logapi.js",
-//          "vendorKey": "iabtechlab.com-omid",
-//          "params": "iabtechlab-Dailymotion"
-//        ]
-        let testData = try? data!.merging(script1) { (current, _) in current }
-        print("===== \(name)")
-        print("===== \(data)")
-        let newEvent: PlayerEvent = .namedEvent(name: name, data: testData)
-        delegate?.player(self, didReceiveEvent: newEvent)
-        return
       default:
         break
       }
