@@ -13,8 +13,6 @@ Our iOS SDK allows for effortless embedding of the Dailymotion video player in y
 - Swift 4
 - iOS 8+
 
-**Note: this SDK is using IDFA collection (will be asked by Apple in iTunes Connect when you will submit your app in the store). You can still disable it if you really need to when instantiating `DMPlayerViewController`.**
-
 Note: If you require an Objective-C version of the library or support for iOS < 8, use the [old version](https://github.com/dailymotion/dailymotion-player-sdk-ios) of the library.
 
 ## Installation
@@ -26,6 +24,20 @@ use_frameworks!
 
 pod 'DailymotionPlayerSDK`
 ```
+
+## User Privacy and Data Use
+
+This SDK is using IDFA collection, you can still disable it if you really need to when instantiating `DMPlayerViewController`. (Will be asked by Apple in iTunes Connect when you will submit your app in the store)
+
+##### Starting from iOS 14.5 :
+
+- App Should use version 3.9.0 or newer, from this version the library will use the new `AppTrackingTransparency` framework to check for user authorisation, the app will be required to ask users for their permission to track them across apps and websites owned by other companies.
+
+- App should add `NSUserTrackingUsageDescription` [Apple doc](https://developer.apple.com/documentation/bundleresources/information_property_list/nsusertrackingusagedescription)
+
+- App should use request tracking authorization using `AppTrackingTransparency` to ask users for their permission [Apple doc](https://developer.apple.com/documentation/apptrackingtransparency/attrackingmanager/3547037-requesttrackingauthorization)
+
+- If App continue using version 3.8.0 of library or older, the IDFA will not be used to track users.
 
 ## Usage
 
