@@ -12,9 +12,9 @@ public enum PlayerEvent {
 }
 
 public struct PlayerError: Error {
-  let title: String
-  let code: String
-  let message: String
+  public let title: String
+  public let code: String
+  public let message: String
 }
 
 final class EventParser {
