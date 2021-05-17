@@ -7,7 +7,7 @@ import WebKit
 import AdSupport
 import AppTrackingTransparency
 
-public protocol DMPlayerViewControllerDelegate: class {
+public protocol DMPlayerViewControllerDelegate: AnyObject {
   
   func player(_ player: DMPlayerViewController, didReceiveEvent event: PlayerEvent)
   func player(_ player: DMPlayerViewController, openUrl url: URL)

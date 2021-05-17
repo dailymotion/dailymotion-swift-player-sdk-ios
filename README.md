@@ -9,11 +9,11 @@
 Our iOS SDK allows for effortless embedding of the Dailymotion video player in your iOS application using a WebView and is the same tool we used to create our flagship Dailymotion applications. It provides access to the Player API and gives you full control of the player and access to player and video data. To learn more please check out the official Dailymotion iOS developer doc [here](https://developer.dailymotion.com/player/#embed-mobile-ios).
 
 ## Requirements
-- Xcode 8 and later
+- Xcode 9 and later
 - Swift 4
-- iOS 8+
+- iOS 9+
 
-Note: If you require an Objective-C version of the library or support for iOS < 8, use the [old version](https://github.com/dailymotion/dailymotion-player-sdk-ios) of the library.
+Note: If you require an Objective-C version of the library or support for iOS < 9, use the [old version](https://github.com/dailymotion/dailymotion-player-sdk-ios) of the library.
 
 ## Installation
 
