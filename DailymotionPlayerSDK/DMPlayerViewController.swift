@@ -126,9 +126,9 @@ open class DMPlayerViewController: UIViewController {
       return
     }
 
-    //x5xvext
-    //x80wxwd
-    let js = self.buildLoadString(videoId: "x80wxwd", params: params)
+    // x5xvext
+    // x80wxwd
+    let js = self.buildLoadString(videoId: videoId, params: params)
 
     if let consentCookie = buildConsentCookie() {
       setCookie(consentCookie) {
@@ -270,8 +270,7 @@ open class DMPlayerViewController: UIViewController {
       URLQueryItem(name: "app", value: Bundle.main.bundleIdentifier),
       URLQueryItem(name: "client_type", value: UIDevice.current.userInterfaceIdiom == .pad ? "ipadosapp" : "iosapp"),
       URLQueryItem(name: "webkit-playsinline", value: "1"),
-      URLQueryItem(name: "queue-enable", value: "0"),
-      URLQueryItem(name: "GK_PV5_OMSDK", value: "1")
+      URLQueryItem(name: "queue-enable", value: "0")
     ]
     
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
@@ -413,7 +412,7 @@ extension DMPlayerViewController: WKNavigationDelegate {
   open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     delegate?.player(self, didFailToInitializeWithError: error)
   }
-  
+
 }
 
 extension DMPlayerViewController: WKUIDelegate {
