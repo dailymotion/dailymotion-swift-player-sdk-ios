@@ -2,10 +2,11 @@
 //  Copyright © 2016 Dailymotion. All rights reserved.
 //
 
-import UIKit
-import WebKit
 import AdSupport
 import AppTrackingTransparency
+import OMSDK_Dailymotion
+import UIKit
+import WebKit
 
 public protocol DMPlayerViewControllerDelegate: AnyObject {
   
