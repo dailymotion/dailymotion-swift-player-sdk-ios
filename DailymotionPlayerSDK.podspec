@@ -10,5 +10,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
   s.source_files = 'DailymotionPlayerSDK/*.swift'
   s.swift_version = '5.0'
-  s.frameworks = 'UIKit', 'WebKit', 'AdSupport'
+  s.frameworks = 'UIKit', 'WebKit', 'AdSupport', 'OMSDK_Dailymotion'
+  s.vendored_frameworks = 'OMSDK_Dailymotion'
 end
