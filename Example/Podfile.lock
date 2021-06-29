@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  DailymotionPlayerSDK: fb9c20efe8d155cfad11944cd32e5210cf2716ef
+  DailymotionPlayerSDK: 6f73c8747a68e59c259f7635ab122e5f6106568b
 
 PODFILE CHECKSUM: 460c730fcdce9c8f80db5f7cf7feda6e81497947
 
