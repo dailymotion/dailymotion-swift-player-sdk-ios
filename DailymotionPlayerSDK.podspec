@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DailymotionPlayerSDK'
-  s.version          = '3.10.1'
+  s.version          = '4.0.0'
   s.summary          = 'Dailymotion iOS player (Swift)'
   s.homepage         = 'https://github.com/dailymotion/dailymotion-swift-player-sdk-ios'
   s.author           = 'Dailymotion'
