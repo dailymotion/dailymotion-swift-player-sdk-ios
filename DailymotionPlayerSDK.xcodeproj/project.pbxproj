@@ -13,7 +13,7 @@
 		10F9BD051DEDD6AB00E30919 /* DMPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F9BD041DEDD6AB00E30919 /* DMPlayerViewController.swift */; };
 		10F9BD071DEDDC5400E30919 /* EventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F9BD061DEDDC5400E30919 /* EventParser.swift */; };
 		10F9BD0B1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */; };
-		3E5E39D3268B525700AFCD8F /* OMSDK_Dailymotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5E39CE268B410A00AFCD8F /* OMSDK_Dailymotion.framework */; platformFilter = ios; };
+		3E5E39D7268B555800AFCD8F /* OMSDK_Dailymotion.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5E39D6268B555800AFCD8F /* OMSDK_Dailymotion.xcframework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +36,7 @@
 		10F9BD041DEDD6AB00E30919 /* DMPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = DMPlayerViewController.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BD061DEDDC5400E30919 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DailymotionPlayerSDK.podspec; path = ../DailymotionPlayerSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		3E5E39CE268B410A00AFCD8F /* OMSDK_Dailymotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OMSDK_Dailymotion.framework; sourceTree = "<group>"; };
+		3E5E39D6268B555800AFCD8F /* OMSDK_Dailymotion.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = OMSDK_Dailymotion.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E5E39D3268B525700AFCD8F /* OMSDK_Dailymotion.framework in Frameworks */,
+				3E5E39D7268B555800AFCD8F /* OMSDK_Dailymotion.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +102,7 @@
 		3E7DE82F268B2E67002783A7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3E5E39CE268B410A00AFCD8F /* OMSDK_Dailymotion.framework */,
+				3E5E39D6268B555800AFCD8F /* OMSDK_Dailymotion.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
