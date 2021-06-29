@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3E7DE5612689C404002783A7 /* OMSDK_Dailymotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7DE44226863908002783A7 /* OMSDK_Dailymotion.framework */; };
-		3E7DE5622689C404002783A7 /* OMSDK_Dailymotion.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E7DE44226863908002783A7 /* OMSDK_Dailymotion.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		582D522DB3420A8043F4828F /* Pods_Player_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */; };
 		942FEE1C1E22787A00D3E65F /* ShareActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942FEE1B1E22787A00D3E65F /* ShareActivityItemProvider.swift */; };
 		9469C7DF1E22694600F4D389 /* UIView+DMAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */; };
@@ -26,7 +24,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3E7DE5622689C404002783A7 /* OMSDK_Dailymotion.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -37,7 +34,6 @@
 		0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Player_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A1C68F7EF4F5ACA3E62FC0D /* Pods-Player Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.debug.xcconfig"; sourceTree = "<group>"; };
 		1C1F1012B3D98FFFB1AAE7E2 /* Pods-Player Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Player Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Player Example/Pods-Player Example.release.xcconfig"; sourceTree = "<group>"; };
-		3E7DE44226863908002783A7 /* OMSDK_Dailymotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OMSDK_Dailymotion.framework; sourceTree = "<group>"; };
 		942FEE1B1E22787A00D3E65F /* ShareActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareActivityItemProvider.swift; sourceTree = "<group>"; };
 		9469C7DE1E22694600F4D389 /* UIView+DMAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+DMAdditions.swift"; sourceTree = "<group>"; };
 		946C6D7B1DEF19B20007A994 /* Player Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Player Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,7 +51,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				582D522DB3420A8043F4828F /* Pods_Player_Example.framework in Frameworks */,
-				3E7DE5612689C404002783A7 /* OMSDK_Dailymotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,7 +103,6 @@
 			isa = PBXGroup;
 			children = (
 				0AE3BEC259C6180BCDE579BB /* Pods_Player_Example.framework */,
-				3E7DE44226863908002783A7 /* OMSDK_Dailymotion.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -124,8 +118,8 @@
 				946C6D771DEF19B20007A994 /* Sources */,
 				946C6D781DEF19B20007A994 /* Frameworks */,
 				946C6D791DEF19B20007A994 /* Resources */,
-				B7C47C9B15F29A28DF18674B /* [CP] Embed Pods Frameworks */,
 				3E7DE5632689C404002783A7 /* Embed Frameworks */,
+				04A8D052A78C270FB1D0DAF6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -186,6 +180,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04A8D052A78C270FB1D0DAF6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh",
+				"${PODS_ROOT}/../../OMSDK_Dailymotion.framework",
+				"${BUILT_PRODUCTS_DIR}/DailymotionPlayerSDK/DailymotionPlayerSDK.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMSDK_Dailymotion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DailymotionPlayerSDK.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		0BBADBD7409C0893F60AD6F9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -202,24 +216,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B7C47C9B15F29A28DF18674B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/DailymotionPlayerSDK/DailymotionPlayerSDK.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DailymotionPlayerSDK.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

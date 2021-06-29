@@ -17,14 +17,14 @@ public protocol DMPlayerViewControllerDelegate: AnyObject {
   
 }
 
-private enum Quartile {
-  case Init
-  case start
-  case firstQuartile
-  case midpoint
-  case thirdQuartile
-  case complete
-}
+//private enum Quartile {
+//  case Init
+//  case start
+//  case firstQuartile
+//  case midpoint
+//  case thirdQuartile
+//  case complete
+//}
 
 open class DMPlayerViewController: UIViewController {
   
@@ -49,12 +49,12 @@ open class DMPlayerViewController: UIViewController {
   open weak var delegate: DMPlayerViewControllerDelegate?
 
   /// OM SDK
-  private var omidAdEvents: OMIDDailymotionAdEvents?
-  private var omidMediaEvents: OMIDDailymotionMediaEvents?
-  private var currentQuartile: Quartile = .Init
-  private var adPosition: TimeInterval = 0.0
-  private var adDuration: TimeInterval = 0.0
-  private var omidSession: OMIDDailymotionAdSession?
+//  private var omidAdEvents: OMIDDailymotionAdEvents?
+//  private var omidMediaEvents: OMIDDailymotionMediaEvents?
+//  private var currentQuartile: Quartile = .Init
+//  private var adPosition: TimeInterval = 0.0
+//  private var adDuration: TimeInterval = 0.0
+//  private var omidSession: OMIDDailymotionAdSession?
 
   override open var shouldAutorotate: Bool {
     return true
@@ -372,7 +372,7 @@ extension DMPlayerViewController: WKScriptMessageHandler {
         break
       }
 
-      handleOmsdkSignals(event)
+//      handleOmsdkSignals(event)
 
       delegate?.player(self, didReceiveEvent: event)
     }
@@ -489,211 +489,211 @@ extension DMPlayerViewController {
 
 }
 
-private extension DMPlayerViewController {
-  func handleOmsdkSignals(_ event: PlayerEvent) {
-    switch event {
-    case .namedEvent(let name, let data) where name == WebPlayerEvent.adLoaded:
-      guard let scripts = parseVerificationScriptsInfo(from: data) else { return }
-      createOmidSession(scripts)
-      do {
-        try omidAdEvents?.impressionOccurred()
-      } catch let error {
-        omidSession?.logError(withType: .generic, message: error.localizedDescription)
-      }
-
-      guard
-        let skipOffsetString = data?["skipOffset"],
-        let skipOffset = Int(skipOffsetString),
-        let autoPlay = data?["autoplay"]?.boolValue,
-        let position = data?["position"]
-      else  { return }
-
-      let omidPosition: OMIDPosition
-      switch position {
-      case "preroll":
-        omidPosition = .preroll
-      case "midroll":
-        omidPosition = .midroll
-      case "postroll":
-        omidPosition = .postroll
-      case "standalone":
-        omidPosition = .standalone
-      default:
-        fatalError("Incorrect position")
-      }
-
-      let properties = OMIDDailymotionVASTProperties(skipOffset: CGFloat(skipOffset), autoPlay: autoPlay, position: omidPosition)
-      do {
-        try omidAdEvents?.loaded(with: properties)
-      } catch let error {
-        omidSession?.logError(withType: .generic, message: error.localizedDescription)
-      }
-    case .namedEvent(let name, let data) where name == WebPlayerEvent.adStart:
-      currentQuartile = .Init
-      adDuration = Double((data!["adData[adDuration]"])!)!
-      adPosition = 0
-      startOmidSession()
-    case .namedEvent(let name, let data) where name == WebPlayerEvent.adEnd:
-      switch data?["reason"] {
-      case "AD_STOPPED":
-        omidMediaEvents?.complete()
-        currentQuartile = .complete
-      case "AD_SKIPPED":
-        omidMediaEvents?.skipped()
-      case "AD_ERROR":
-        omidSession?.logError(withType: .media, message: data?["error"] ?? "AD_ERROR")
-      default:
-        break
-      }
-
-      endOmidSession()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferStart:
-      omidMediaEvents?.bufferStart()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferFinish:
-      omidMediaEvents?.bufferFinish()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adPause:
-      omidMediaEvents?.pause()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adResume:
-      omidMediaEvents?.resume()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adClick:
-      omidMediaEvents?.adUserInteraction(withType: .click)
-    case .namedEvent(let name, let data) where name == WebPlayerEvent.volumeChange:
-      if let muted = data?[WebPlayerParam.muted], muted == true.description {
-        omidMediaEvents?.volumeChange(to: 0)
-      } else {
-        omidMediaEvents?.volumeChange(to: 1)
-      }
-    case .namedEvent(let name, let data) where name == WebPlayerEvent.fullscreenChange:
-      let fullscreen = (data![WebPlayerParam.fullscreen])!.boolValue
-      omidMediaEvents?.playerStateChange(to: fullscreen ? .fullscreen : .normal)
-    case .timeEvent(let name, let position) where name == WebPlayerEvent.adTimeUpdate:
-      adPosition = position
-      recordQuartileChange()
-    default:
-      break
-    }
-  }
-
-  func parseVerificationScriptsInfo(from data: [String: String]?) -> [String: VerificationScriptInfo]? {
-    guard let data = data else { return nil }
-
-    var scripts: [String: VerificationScriptInfo] = [:]
-
-    data.keys.forEach { key in
-      guard let groups = key.groups(for: "verificationScripts\\[(.*)]\\[(.*)]").first else { return }
-
-      switch groups[2] {
-      case "resource":
-        scripts[groups[1], default: VerificationScriptInfo()].url = data[groups[0]]
-      case "vendor":
-        scripts[groups[1], default: VerificationScriptInfo()].vendorKey = data[groups[0]]
-      case "parameters":
-        scripts[groups[1], default: VerificationScriptInfo()].parameters = data[groups[0]]
-      default:
-        break
-      }
-    }
-
-    return scripts
-  }
-
-  func createOmidSession(_ scripts: [String: VerificationScriptInfo]?) {
-    guard omidSession == nil, let scripts = scripts else { return }
-
-    let verificationScripts: [OMIDDailymotionVerificationScriptResource] = scripts.compactMap { script in
-      guard
-        let urlString = script.value.url,
-        let url = URL(string: urlString),
-        let vendorKey = script.value.vendorKey,
-        let parameters = script.value.parameters
-      else { return nil }
-
-      return OMIDDailymotionVerificationScriptResource(url: url, vendorKey: vendorKey, parameters: parameters)
-    }
-
-    print("===== create omid session \(verificationScripts)")
-    var context: OMIDDailymotionAdSessionContext?
-
-    let partner = OMIDDailymotionPartner(name: "Dailymotion", versionString: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)
-
-    context = createAdSessionContext(withPartner: partner!, resources: verificationScripts, webView: webView)
-
-    let configuration = try! OMIDDailymotionAdSessionConfiguration(creativeType: .video, impressionType: .onePixel, impressionOwner: .nativeOwner, mediaEventsOwner: .nativeOwner, isolateVerificationScripts: true)
-
-    omidSession = try! OMIDDailymotionAdSession(configuration: configuration, adSessionContext: context!)
-    omidSession!.mainAdView = webView
-
-    omidAdEvents = try! OMIDDailymotionAdEvents(adSession: omidSession!)
-    omidMediaEvents = try! OMIDDailymotionMediaEvents(adSession: omidSession!)
-  }
-
-  func startOmidSession() {
-    omidSession?.start()
-//    NotificationCenter.default.addObserver(self, selector: #selector(didEnterMiniplayer), name: .DidEnterMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didExitMiniplayer), name: .DidExitMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didDismissMiniplayer), name: .DidDismissMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didHideMiniplayer), name: .HideMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didRestoreMiniplayer), name: .RestoreMiniPlayer, object: nil)
-  }
-
-  func endOmidSession() {
-    omidSession?.finish()
-    omidSession = nil
-    omidAdEvents = nil
-    omidMediaEvents = nil
-
-//    NotificationCenter.default.removeObserver(self, name: .DidEnterMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .DidExitMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .DidDismissMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .HideMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .RestoreMiniPlayer, object: nil)
-  }
-
-  func createAdSessionContext(withPartner partner: OMIDDailymotionPartner, resources: [OMIDDailymotionVerificationScriptResource], webView: WKWebView) -> OMIDDailymotionAdSessionContext {
-    let omidServiceUrl = Bundle.main.url(forResource: "omsdk-v1", withExtension: "js")!
-    let script = try! String(contentsOf: omidServiceUrl)
-
-    do {
-      return try OMIDDailymotionAdSessionContext(partner: partner, script: script, resources: resources, contentUrl: nil, customReferenceIdentifier: nil)
-    } catch {
-        fatalError("Unable to instantiate session context: \(error)")
-    }
-  }
-
-  func recordQuartileChange() {
-    let progressPercent = adPosition / adDuration
-
-    switch currentQuartile {
-    case .Init:
-      if (progressPercent > 0) {
-        print("===== quartile start")
-        omidMediaEvents?.start(withDuration: CGFloat(adDuration), mediaPlayerVolume: 1)
-        currentQuartile = .start
-      }
-    case .start:
-      if (progressPercent > Double(1)/Double(4)) {
-        print("===== quartile first")
-        omidMediaEvents?.firstQuartile()
-        currentQuartile = .firstQuartile
-      }
-    case .firstQuartile:
-      if (progressPercent > Double(1)/Double(2)) {
-        print("===== quartile second")
-        omidMediaEvents?.midpoint()
-        currentQuartile = .midpoint
-      }
-    case .midpoint:
-      if (progressPercent > Double(3)/Double(4)) {
-        print("===== quartile third")
-        omidMediaEvents?.thirdQuartile()
-        currentQuartile = .thirdQuartile
-      }
-    case .thirdQuartile:
-      if (progressPercent >= 1.0) {
-        print("===== quartile fourth")
-      }
-    default:
-      break
-    }
-  }
-}
+//private extension DMPlayerViewController {
+//  func handleOmsdkSignals(_ event: PlayerEvent) {
+//    switch event {
+//    case .namedEvent(let name, let data) where name == WebPlayerEvent.adLoaded:
+//      guard let scripts = parseVerificationScriptsInfo(from: data) else { return }
+//      createOmidSession(scripts)
+//      do {
+//        try omidAdEvents?.impressionOccurred()
+//      } catch let error {
+//        omidSession?.logError(withType: .generic, message: error.localizedDescription)
+//      }
+//
+//      guard
+//        let skipOffsetString = data?["skipOffset"],
+//        let skipOffset = Int(skipOffsetString),
+//        let autoPlay = data?["autoplay"]?.boolValue,
+//        let position = data?["position"]
+//      else  { return }
+//
+//      let omidPosition: OMIDPosition
+//      switch position {
+//      case "preroll":
+//        omidPosition = .preroll
+//      case "midroll":
+//        omidPosition = .midroll
+//      case "postroll":
+//        omidPosition = .postroll
+//      case "standalone":
+//        omidPosition = .standalone
+//      default:
+//        fatalError("Incorrect position")
+//      }
+//
+//      let properties = OMIDDailymotionVASTProperties(skipOffset: CGFloat(skipOffset), autoPlay: autoPlay, position: omidPosition)
+//      do {
+//        try omidAdEvents?.loaded(with: properties)
+//      } catch let error {
+//        omidSession?.logError(withType: .generic, message: error.localizedDescription)
+//      }
+//    case .namedEvent(let name, let data) where name == WebPlayerEvent.adStart:
+//      currentQuartile = .Init
+//      adDuration = Double((data!["adData[adDuration]"])!)!
+//      adPosition = 0
+//      startOmidSession()
+//    case .namedEvent(let name, let data) where name == WebPlayerEvent.adEnd:
+//      switch data?["reason"] {
+//      case "AD_STOPPED":
+//        omidMediaEvents?.complete()
+//        currentQuartile = .complete
+//      case "AD_SKIPPED":
+//        omidMediaEvents?.skipped()
+//      case "AD_ERROR":
+//        omidSession?.logError(withType: .media, message: data?["error"] ?? "AD_ERROR")
+//      default:
+//        break
+//      }
+//
+//      endOmidSession()
+//    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferStart:
+//      omidMediaEvents?.bufferStart()
+//    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferFinish:
+//      omidMediaEvents?.bufferFinish()
+//    case .namedEvent(let name, _) where name == WebPlayerEvent.adPause:
+//      omidMediaEvents?.pause()
+//    case .namedEvent(let name, _) where name == WebPlayerEvent.adResume:
+//      omidMediaEvents?.resume()
+//    case .namedEvent(let name, _) where name == WebPlayerEvent.adClick:
+//      omidMediaEvents?.adUserInteraction(withType: .click)
+//    case .namedEvent(let name, let data) where name == WebPlayerEvent.volumeChange:
+//      if let muted = data?[WebPlayerParam.muted], muted == true.description {
+//        omidMediaEvents?.volumeChange(to: 0)
+//      } else {
+//        omidMediaEvents?.volumeChange(to: 1)
+//      }
+//    case .namedEvent(let name, let data) where name == WebPlayerEvent.fullscreenChange:
+//      let fullscreen = (data![WebPlayerParam.fullscreen])!.boolValue
+//      omidMediaEvents?.playerStateChange(to: fullscreen ? .fullscreen : .normal)
+//    case .timeEvent(let name, let position) where name == WebPlayerEvent.adTimeUpdate:
+//      adPosition = position
+//      recordQuartileChange()
+//    default:
+//      break
+//    }
+//  }
+//
+//  func parseVerificationScriptsInfo(from data: [String: String]?) -> [String: VerificationScriptInfo]? {
+//    guard let data = data else { return nil }
+//
+//    var scripts: [String: VerificationScriptInfo] = [:]
+//
+//    data.keys.forEach { key in
+//      guard let groups = key.groups(for: "verificationScripts\\[(.*)]\\[(.*)]").first else { return }
+//
+//      switch groups[2] {
+//      case "resource":
+//        scripts[groups[1], default: VerificationScriptInfo()].url = data[groups[0]]
+//      case "vendor":
+//        scripts[groups[1], default: VerificationScriptInfo()].vendorKey = data[groups[0]]
+//      case "parameters":
+//        scripts[groups[1], default: VerificationScriptInfo()].parameters = data[groups[0]]
+//      default:
+//        break
+//      }
+//    }
+//
+//    return scripts
+//  }
+//
+//  func createOmidSession(_ scripts: [String: VerificationScriptInfo]?) {
+//    guard omidSession == nil, let scripts = scripts else { return }
+//
+//    let verificationScripts: [OMIDDailymotionVerificationScriptResource] = scripts.compactMap { script in
+//      guard
+//        let urlString = script.value.url,
+//        let url = URL(string: urlString),
+//        let vendorKey = script.value.vendorKey,
+//        let parameters = script.value.parameters
+//      else { return nil }
+//
+//      return OMIDDailymotionVerificationScriptResource(url: url, vendorKey: vendorKey, parameters: parameters)
+//    }
+//
+//    print("===== create omid session \(verificationScripts)")
+//    var context: OMIDDailymotionAdSessionContext?
+//
+//    let partner = OMIDDailymotionPartner(name: "Dailymotion", versionString: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)
+//
+//    context = createAdSessionContext(withPartner: partner!, resources: verificationScripts, webView: webView)
+//
+//    let configuration = try! OMIDDailymotionAdSessionConfiguration(creativeType: .video, impressionType: .onePixel, impressionOwner: .nativeOwner, mediaEventsOwner: .nativeOwner, isolateVerificationScripts: true)
+//
+//    omidSession = try! OMIDDailymotionAdSession(configuration: configuration, adSessionContext: context!)
+//    omidSession!.mainAdView = webView
+//
+//    omidAdEvents = try! OMIDDailymotionAdEvents(adSession: omidSession!)
+//    omidMediaEvents = try! OMIDDailymotionMediaEvents(adSession: omidSession!)
+//  }
+//
+//  func startOmidSession() {
+//    omidSession?.start()
+////    NotificationCenter.default.addObserver(self, selector: #selector(didEnterMiniplayer), name: .DidEnterMiniPlayer, object: nil)
+////    NotificationCenter.default.addObserver(self, selector: #selector(didExitMiniplayer), name: .DidExitMiniPlayer, object: nil)
+////    NotificationCenter.default.addObserver(self, selector: #selector(didDismissMiniplayer), name: .DidDismissMiniPlayer, object: nil)
+////    NotificationCenter.default.addObserver(self, selector: #selector(didHideMiniplayer), name: .HideMiniPlayer, object: nil)
+////    NotificationCenter.default.addObserver(self, selector: #selector(didRestoreMiniplayer), name: .RestoreMiniPlayer, object: nil)
+//  }
+//
+//  func endOmidSession() {
+//    omidSession?.finish()
+//    omidSession = nil
+//    omidAdEvents = nil
+//    omidMediaEvents = nil
+//
+////    NotificationCenter.default.removeObserver(self, name: .DidEnterMiniPlayer, object: nil)
+////    NotificationCenter.default.removeObserver(self, name: .DidExitMiniPlayer, object: nil)
+////    NotificationCenter.default.removeObserver(self, name: .DidDismissMiniPlayer, object: nil)
+////    NotificationCenter.default.removeObserver(self, name: .HideMiniPlayer, object: nil)
+////    NotificationCenter.default.removeObserver(self, name: .RestoreMiniPlayer, object: nil)
+//  }
+//
+//  func createAdSessionContext(withPartner partner: OMIDDailymotionPartner, resources: [OMIDDailymotionVerificationScriptResource], webView: WKWebView) -> OMIDDailymotionAdSessionContext {
+//    let omidServiceUrl = Bundle.main.url(forResource: "omsdk-v1", withExtension: "js")!
+//    let script = try! String(contentsOf: omidServiceUrl)
+//
+//    do {
+//      return try OMIDDailymotionAdSessionContext(partner: partner, script: script, resources: resources, contentUrl: nil, customReferenceIdentifier: nil)
+//    } catch {
+//        fatalError("Unable to instantiate session context: \(error)")
+//    }
+//  }
+//
+//  func recordQuartileChange() {
+//    let progressPercent = adPosition / adDuration
+//
+//    switch currentQuartile {
+//    case .Init:
+//      if (progressPercent > 0) {
+//        print("===== quartile start")
+//        omidMediaEvents?.start(withDuration: CGFloat(adDuration), mediaPlayerVolume: 1)
+//        currentQuartile = .start
+//      }
+//    case .start:
+//      if (progressPercent > Double(1)/Double(4)) {
+//        print("===== quartile first")
+//        omidMediaEvents?.firstQuartile()
+//        currentQuartile = .firstQuartile
+//      }
+//    case .firstQuartile:
+//      if (progressPercent > Double(1)/Double(2)) {
+//        print("===== quartile second")
+//        omidMediaEvents?.midpoint()
+//        currentQuartile = .midpoint
+//      }
+//    case .midpoint:
+//      if (progressPercent > Double(3)/Double(4)) {
+//        print("===== quartile third")
+//        omidMediaEvents?.thirdQuartile()
+//        currentQuartile = .thirdQuartile
+//      }
+//    case .thirdQuartile:
+//      if (progressPercent >= 1.0) {
+//        print("===== quartile fourth")
+//      }
+//    default:
+//      break
+//    }
+//  }
+//}
