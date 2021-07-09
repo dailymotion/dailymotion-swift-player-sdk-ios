@@ -594,7 +594,7 @@ private extension DMPlayerViewController {
       endOmidSession()
     case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferStart:
       omidMediaEvents?.bufferStart()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferFinish:
+    case .namedEvent(let name, _) where name == WebPlayerEvent.adBufferEnd:
       omidMediaEvents?.bufferFinish()
     case .namedEvent(let name, _) where name == WebPlayerEvent.adPause:
       omidMediaEvents?.pause()

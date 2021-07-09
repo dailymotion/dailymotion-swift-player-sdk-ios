@@ -24,7 +24,7 @@ struct WebPlayerEvent {
   static let adStart = "ad_start"
   static let adEnd = "ad_end"
   static let adBufferStart = "ad_bufferStart"
-  static let adBufferFinish = "ad_bufferFinish"
+  static let adBufferEnd = "ad_bufferEnd"
   static let adPlay = "ad_play"
   static let adPause = "ad_pause"
   static let adResume = "ad_resume"
