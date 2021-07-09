@@ -81,6 +81,7 @@ open class DMPlayerViewController: UIViewController {
   private var adPosition: TimeInterval = 0.0
   private var adDuration: TimeInterval = 0.0
   private var omidSession: OMIDDailymotionAdSession?
+  private var isAdPaused = false
 
   override open var shouldAutorotate: Bool {
     return true
@@ -577,6 +578,8 @@ private extension DMPlayerViewController {
       currentQuartile = .Init
       self.adDuration = adDuration
       adPosition = 0
+      isAdPaused = false
+
       startOmidSession()
     case .namedEvent(let name, let data) where name == WebPlayerEvent.adEnd:
       switch data?["reason"] {
@@ -598,8 +601,12 @@ private extension DMPlayerViewController {
       omidMediaEvents?.bufferFinish()
     case .namedEvent(let name, _) where name == WebPlayerEvent.adPause:
       omidMediaEvents?.pause()
-    case .namedEvent(let name, _) where name == WebPlayerEvent.adResume:
-      omidMediaEvents?.resume()
+      isAdPaused = true
+    case .namedEvent(let name, _) where name == WebPlayerEvent.adPlay:
+      if isAdPaused {
+        omidMediaEvents?.resume()
+        isAdPaused = false
+      }
     case .namedEvent(let name, _) where name == WebPlayerEvent.adClick:
       omidMediaEvents?.adUserInteraction(withType: .click)
     case .namedEvent(let name, let data) where name == WebPlayerEvent.volumeChange:
