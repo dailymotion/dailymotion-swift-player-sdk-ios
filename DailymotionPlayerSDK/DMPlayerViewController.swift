@@ -17,6 +17,10 @@ public protocol DMPlayerViewControllerDelegate: AnyObject {
   
 }
 
+private enum OMSDKError: Error {
+  case error
+}
+
 private enum Quartile {
   case Init
   case start
@@ -27,14 +31,18 @@ private enum Quartile {
 }
 
 final class DailymotionSDK {
-  static let resourceBundle: Bundle = {
+  static let resourceBundle: Bundle? = {
     let myBundle = Bundle(for: DailymotionSDK.self)
 
-    guard let resourceBundleURL = myBundle.url(forResource: "DailymotionPlayerSDK", withExtension: "bundle")
-    else { fatalError("DailymotionPlayerSDK.bundle not found") }
+    guard let resourceBundleURL = myBundle.url(forResource: "DailymotionPlayerSDK", withExtension: "bundle") else {
+      assertionFailure("DailymotionPlayerSDK.bundle required for OM SDK not found")
+      return nil
+    }
 
-    guard let resourceBundle = Bundle(url: resourceBundleURL)
-    else { fatalError("Cannot access DailymotionPlayerSDK.bundle") }
+    guard let resourceBundle = Bundle(url: resourceBundleURL) else {
+      assertionFailure("Cannot access DailymotionPlayerSDK.bundle required for OM SDK")
+      return nil
+    }
 
     return resourceBundle
   }()
@@ -43,11 +51,11 @@ final class DailymotionSDK {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  fileprivate static let version = "3.10.1"
-  fileprivate static let eventName = "dmevent"
-  fileprivate static let pathPrefix = "/embed/"
-  fileprivate static let messageHandlerEvent = "triggerEvent"
-  fileprivate static let consoleHandlerEvent = "consoleEvent"
+  private static let version = "4.0.0"
+  private static let eventName = "dmevent"
+  private static let pathPrefix = "/embed/"
+  private static let messageHandlerEvent = "triggerEvent"
+  private static let consoleHandlerEvent = "consoleEvent"
   fileprivate static let loggerParameterKey = "logger"
   private static let tcStringKey = "IABTCF_TCString"
   private static let tcStringCookieName = "dm-euconsent-v2"
@@ -63,6 +71,10 @@ open class DMPlayerViewController: UIViewController {
   open weak var delegate: DMPlayerViewControllerDelegate?
 
   /// OM SDK
+  private static let omidPartnerName = "Dailymotion"
+  private static var omidScriptUrl: URL? = DailymotionSDK.resourceBundle?.url(forResource: "omsdk-v1", withExtension: "js")
+
+  private var allowOMSDK = false
   private var omidAdEvents: OMIDDailymotionAdEvents?
   private var omidMediaEvents: OMIDDailymotionMediaEvents?
   private var currentQuartile: Quartile = .Init
@@ -86,8 +98,17 @@ open class DMPlayerViewController: UIViewController {
               cookies: [HTTPCookie]? = nil, allowIDFA: Bool = true, allowPiP: Bool = true) {
     super.init(nibName: nil, bundle: nil)
 
-    if !OMIDDailymotionSDK.shared.isActive {
-      OMIDDailymotionSDK.shared.activate() ? print("OMIDSDK started") : print("OMIDSDK failed to start")
+    if OMIDDailymotionSDK.shared.isActive {
+      allowOMSDK = true
+    } else {
+      if
+        let _ = DMPlayerViewController.omidScriptUrl,
+        OMIDDailymotionSDK.shared.activate()
+      {
+        allowOMSDK = true
+      } else {
+        allowOMSDK = false
+      }
     }
 
     if allowIDFA {
@@ -390,7 +411,9 @@ extension DMPlayerViewController: WKScriptMessageHandler {
         break
       }
 
-      handleOmsdkSignals(event)
+      if allowOMSDK {
+        handleOmsdkSignals(event)
+      }
 
       delegate?.player(self, didReceiveEvent: event)
     }
@@ -507,12 +530,15 @@ extension DMPlayerViewController {
 
 }
 
+// MARK: - OMSDK
 private extension DMPlayerViewController {
   func handleOmsdkSignals(_ event: PlayerEvent) {
     switch event {
     case .namedEvent(let name, let data) where name == WebPlayerEvent.adLoaded:
-      guard let scripts = parseVerificationScriptsInfo(from: data) else { return }
-      createOmidSession(scripts)
+      guard let verificationScripts = parseVerificationScriptsInfo(from: data) else { return }
+
+      createOmidSession(with: verificationScripts)
+
       do {
         try omidAdEvents?.impressionOccurred()
       } catch let error {
@@ -547,8 +573,9 @@ private extension DMPlayerViewController {
         omidSession?.logError(withType: .generic, message: error.localizedDescription)
       }
     case .namedEvent(let name, let data) where name == WebPlayerEvent.adStart:
+      guard let duration = data?["adData[adDuration]"], let adDuration = Double(duration) else { return }
       currentQuartile = .Init
-      adDuration = Double((data!["adData[adDuration]"])!)!
+      self.adDuration = adDuration
       adPosition = 0
       startOmidSession()
     case .namedEvent(let name, let data) where name == WebPlayerEvent.adEnd:
@@ -582,7 +609,7 @@ private extension DMPlayerViewController {
         omidMediaEvents?.volumeChange(to: 1)
       }
     case .namedEvent(let name, let data) where name == WebPlayerEvent.fullscreenChange:
-      let fullscreen = (data![WebPlayerParam.fullscreen])!.boolValue
+      guard let fullscreen = (data?[WebPlayerParam.fullscreen])?.boolValue else { return }
       omidMediaEvents?.playerStateChange(to: fullscreen ? .fullscreen : .normal)
     case .timeEvent(let name, let position) where name == WebPlayerEvent.adTimeUpdate:
       adPosition = position
@@ -592,7 +619,7 @@ private extension DMPlayerViewController {
     }
   }
 
-  func parseVerificationScriptsInfo(from data: [String: String]?) -> [String: VerificationScriptInfo]? {
+  func parseVerificationScriptsInfo(from data: [String: String]?) -> [OMIDDailymotionVerificationScriptResource]? {
     guard let data = data else { return nil }
 
     var scripts: [String: VerificationScriptInfo] = [:]
@@ -612,13 +639,6 @@ private extension DMPlayerViewController {
       }
     }
 
-    print("===== \(scripts)")
-    return scripts
-  }
-
-  func createOmidSession(_ scripts: [String: VerificationScriptInfo]?) {
-    guard omidSession == nil, let scripts = scripts else { return }
-
     let verificationScripts: [OMIDDailymotionVerificationScriptResource] = scripts.compactMap { script in
       guard
         let urlString = script.value.url,
@@ -629,32 +649,36 @@ private extension DMPlayerViewController {
 
       return OMIDDailymotionVerificationScriptResource(url: url, vendorKey: vendorKey, parameters: parameters)
     }
+    print("===== \(scripts)")
+    print("===== \(verificationScripts)")
+    return verificationScripts
+  }
 
-    guard !verificationScripts.isEmpty else { return }
+  func createOmidSession(with verificationScripts: [OMIDDailymotionVerificationScriptResource]) {
+    print("===== create omid session")
+    guard
+      omidSession == nil,
+      !verificationScripts.isEmpty,
+      let partner = OMIDDailymotionPartner(name: DMPlayerViewController.omidPartnerName, versionString: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)
+    else {
+      return
+    }
 
-    print("===== create omid session \(verificationScripts)")
-    var context: OMIDDailymotionAdSessionContext?
-
-    let partner = OMIDDailymotionPartner(name: "Dailymotion", versionString: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)
-
-    context = createAdSessionContext(withPartner: partner!, resources: verificationScripts, webView: webView)
-
-    let configuration = try! OMIDDailymotionAdSessionConfiguration(creativeType: .video, impressionType: .onePixel, impressionOwner: .nativeOwner, mediaEventsOwner: .nativeOwner, isolateVerificationScripts: true)
-
-    omidSession = try! OMIDDailymotionAdSession(configuration: configuration, adSessionContext: context!)
-    omidSession!.mainAdView = webView
-
-    omidAdEvents = try! OMIDDailymotionAdEvents(adSession: omidSession!)
-    omidMediaEvents = try! OMIDDailymotionMediaEvents(adSession: omidSession!)
+    do {
+      let context = try createAdSessionContext(withPartner: partner, resources: verificationScripts, webView: webView)
+      let configuration = try OMIDDailymotionAdSessionConfiguration(creativeType: .video, impressionType: .onePixel, impressionOwner: .nativeOwner, mediaEventsOwner: .nativeOwner, isolateVerificationScripts: true)
+      let omidSession = try OMIDDailymotionAdSession(configuration: configuration, adSessionContext: context)
+      omidSession.mainAdView = webView
+      omidAdEvents = try OMIDDailymotionAdEvents(adSession: omidSession)
+      omidMediaEvents = try OMIDDailymotionMediaEvents(adSession: omidSession)
+      self.omidSession = omidSession
+    } catch let error {
+      print(error.localizedDescription)
+    }
   }
 
   func startOmidSession() {
     omidSession?.start()
-//    NotificationCenter.default.addObserver(self, selector: #selector(didEnterMiniplayer), name: .DidEnterMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didExitMiniplayer), name: .DidExitMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didDismissMiniplayer), name: .DidDismissMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didHideMiniplayer), name: .HideMiniPlayer, object: nil)
-//    NotificationCenter.default.addObserver(self, selector: #selector(didRestoreMiniplayer), name: .RestoreMiniPlayer, object: nil)
   }
 
   func endOmidSession() {
@@ -662,23 +686,13 @@ private extension DMPlayerViewController {
     omidSession = nil
     omidAdEvents = nil
     omidMediaEvents = nil
-
-//    NotificationCenter.default.removeObserver(self, name: .DidEnterMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .DidExitMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .DidDismissMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .HideMiniPlayer, object: nil)
-//    NotificationCenter.default.removeObserver(self, name: .RestoreMiniPlayer, object: nil)
   }
 
-  func createAdSessionContext(withPartner partner: OMIDDailymotionPartner, resources: [OMIDDailymotionVerificationScriptResource], webView: WKWebView) -> OMIDDailymotionAdSessionContext {
-    let omidServiceUrl = DailymotionSDK.resourceBundle.url(forResource: "omsdk-v1", withExtension: "js")!
-    let script = try! String(contentsOf: omidServiceUrl)
+  func createAdSessionContext(withPartner partner: OMIDDailymotionPartner, resources: [OMIDDailymotionVerificationScriptResource], webView: WKWebView) throws -> OMIDDailymotionAdSessionContext {
+    guard let url = DMPlayerViewController.omidScriptUrl else { throw OMSDKError.error }
 
-    do {
-      return try OMIDDailymotionAdSessionContext(partner: partner, script: script, resources: resources, contentUrl: nil, customReferenceIdentifier: nil)
-    } catch let error {
-        fatalError("Unable to instantiate session context: \(error)")
-    }
+    let omidScript = try String(contentsOf: url)
+    return try OMIDDailymotionAdSessionContext(partner: partner, script: omidScript, resources: resources, contentUrl: nil, customReferenceIdentifier: nil)
   }
 
   func recordQuartileChange() {
@@ -687,31 +701,26 @@ private extension DMPlayerViewController {
     switch currentQuartile {
     case .Init:
       if (progressPercent > 0) {
-        print("===== quartile start")
         omidMediaEvents?.start(withDuration: CGFloat(adDuration), mediaPlayerVolume: 1)
         currentQuartile = .start
       }
     case .start:
       if (progressPercent > Double(1)/Double(4)) {
-        print("===== quartile first")
         omidMediaEvents?.firstQuartile()
         currentQuartile = .firstQuartile
       }
     case .firstQuartile:
       if (progressPercent > Double(1)/Double(2)) {
-        print("===== quartile second")
         omidMediaEvents?.midpoint()
         currentQuartile = .midpoint
       }
     case .midpoint:
       if (progressPercent > Double(3)/Double(4)) {
-        print("===== quartile third")
         omidMediaEvents?.thirdQuartile()
         currentQuartile = .thirdQuartile
       }
     case .thirdQuartile:
       if (progressPercent >= 1.0) {
-        print("===== quartile fourth")
       }
     default:
       break
