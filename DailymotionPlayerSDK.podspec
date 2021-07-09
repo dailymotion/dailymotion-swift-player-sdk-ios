@@ -12,4 +12,5 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
   s.frameworks = 'UIKit', 'WebKit', 'AdSupport', 'OMSDK_Dailymotion'
   s.vendored_frameworks = 'OMSDK_Dailymotion.xcframework'
+  s.resource_bundles = { 'DailymotionPlayerSDK' => ['DailymotionPlayerSDK/*.js'] }
 end

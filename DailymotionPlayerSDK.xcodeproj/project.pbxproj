@@ -14,6 +14,8 @@
 		10F9BD071DEDDC5400E30919 /* EventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10F9BD061DEDDC5400E30919 /* EventParser.swift */; };
 		10F9BD0B1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */; };
 		3E5E39D7268B555800AFCD8F /* OMSDK_Dailymotion.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E5E39D6268B555800AFCD8F /* OMSDK_Dailymotion.xcframework */; };
+		3E5E3B9E268B5D3F00AFCD8F /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5E3B9D268B5D3F00AFCD8F /* StringExtensions.swift */; };
+		3E5E3E61268B605A00AFCD8F /* omsdk-v1.js in Resources */ = {isa = PBXBuildFile; fileRef = 3E5E3E60268B605900AFCD8F /* omsdk-v1.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,8 @@
 		10F9BD061DEDDC5400E30919 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; tabWidth = 2; };
 		10F9BD0A1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DailymotionPlayerSDK.podspec; path = ../DailymotionPlayerSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		3E5E39D6268B555800AFCD8F /* OMSDK_Dailymotion.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = OMSDK_Dailymotion.xcframework; sourceTree = "<group>"; };
+		3E5E3B9D268B5D3F00AFCD8F /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		3E5E3E60268B605900AFCD8F /* omsdk-v1.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "omsdk-v1.js"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +90,8 @@
 				10F9BD061DEDDC5400E30919 /* EventParser.swift */,
 				10F9BCED1DEDD65700E30919 /* DailymotionPlayerSDK.h */,
 				10F9BCEE1DEDD65700E30919 /* Info.plist */,
+				3E5E3B9D268B5D3F00AFCD8F /* StringExtensions.swift */,
+				3E5E3E60268B605900AFCD8F /* omsdk-v1.js */,
 			);
 			path = DailymotionPlayerSDK;
 			sourceTree = "<group>";
@@ -204,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E5E3E61268B605A00AFCD8F /* omsdk-v1.js in Resources */,
 				10F9BD0B1DEDE41B00E30919 /* DailymotionPlayerSDK.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E5E3B9E268B5D3F00AFCD8F /* StringExtensions.swift in Sources */,
 				10F9BD051DEDD6AB00E30919 /* DMPlayerViewController.swift in Sources */,
 				10F9BD071DEDDC5400E30919 /* EventParser.swift in Sources */,
 			);
