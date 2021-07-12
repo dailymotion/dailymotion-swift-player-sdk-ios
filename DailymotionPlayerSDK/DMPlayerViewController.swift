@@ -17,6 +17,11 @@ public protocol DMPlayerViewControllerDelegate: AnyObject {
   
 }
 
+private struct EmbedderProperties: Codable {
+  let version: String
+  let capabilities: [String: String]
+}
+
 private enum OMSDKError: Error {
   case error
 }
@@ -308,12 +313,24 @@ open class DMPlayerViewController: UIViewController {
   
   private func eventHandler() -> String {
     var source = "window.dmpNativeBridge = {"
+    if let embedderProperties = getEmbedderProperties() {
+      source += "getEmbedderProperties: function() {"
+      source += "return '\(embedderProperties)';"
+      source += "},"
+    }
     source += "triggerEvent: function(data) {"
     source += "window.webkit.messageHandlers.\(DMPlayerViewController.messageHandlerEvent).postMessage(decodeURIComponent(data));"
     source += "}};"
     return source
   }
-  
+
+  private func getEmbedderProperties() -> String? {
+    let capabilities = ["omsdk": OMIDDailymotionSDK.versionString()]
+    let embedderProperties = EmbedderProperties(version: DMPlayerViewController.version, capabilities: capabilities)
+    guard let encodedData = try? JSONEncoder().encode(embedderProperties) else { return nil }
+    return String(data: encodedData, encoding: .utf8)
+  }
+
   private func jsCookie(from cookie: HTTPCookie) -> String {
     var value = "\(cookie.name)=\(cookie.value);domain=\(cookie.domain);path=\(cookie.path)"
     if cookie.isSecure {
