@@ -92,6 +92,16 @@ open class DMPlayerViewController: UIViewController {
     return true
   }
 
+  public var playerState: OMIDPlayerState? {
+    didSet {
+      guard allowOMSDK, let playerState = playerState else { return }
+
+      if oldValue != playerState {
+        omidMediaEvents?.playerStateChange(to: playerState)
+      }
+    }
+  }
+
   /// Initialize a new instance of the player
   /// - Parameters:
   ///   - parameters:  The dictionary of configuration parameters that are passed to the player.
@@ -633,8 +643,10 @@ private extension DMPlayerViewController {
         omidMediaEvents?.volumeChange(to: 1)
       }
     case .namedEvent(let name, let data) where name == WebPlayerEvent.fullscreenChange:
-      guard let fullscreen = (data?[WebPlayerParam.fullscreen])?.boolValue else { return }
-      omidMediaEvents?.playerStateChange(to: fullscreen ? .fullscreen : .normal)
+      if playerState == nil {
+        guard let fullscreen = (data?[WebPlayerParam.fullscreen])?.boolValue else { return }
+        omidMediaEvents?.playerStateChange(to: fullscreen ? .fullscreen : .normal)
+      }
     case .timeEvent(let name, let position) where name == WebPlayerEvent.adTimeUpdate:
       adPosition = position
       recordQuartileChange()
