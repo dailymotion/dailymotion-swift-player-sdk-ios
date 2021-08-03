@@ -60,13 +60,13 @@ open class DMPlayerViewController: UIViewController {
       loggerEnabled = true
     }
 
-    var cookies: [HTTPCookie] = []
-    cookies.append(contentsOf: cookies)
+    var cookiesToLoad: [HTTPCookie] = []
+    cookiesToLoad.append(contentsOf: cookies ?? [])
     if let consentCookie = buildConsentCookie() {
-      cookies.append(consentCookie)
+      cookiesToLoad.append(consentCookie)
     }
 
-    self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookies, allowPiP: allowPiP)
+    self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookiesToLoad, allowPiP: allowPiP)
   }
   
   private func newWebView(cookies: [HTTPCookie]?, allowPiP: Bool = true) -> WKWebView {
