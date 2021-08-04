@@ -122,6 +122,20 @@ func loadVideo(withId id: String) {
 }
 ```
 
+You can also pass some additional parameters when loading a video. For example if you want to start the video at a specific time:
+
+```swift
+func loadVideo(withId id: String) {
+  let parameters = ["start": 30]
+  guard
+    let encoded = try? JSONEncoder().encode(parameters),
+    let params = String(data: encoded, encoding: .utf8)
+  else { return }
+
+  playerViewController.load(videoId: id, params: params)
+}
+```
+
 For a list of parameters, see the [player API parameters page](https://developer.dailymotion.com/player#player-parameters).
 
 To handle events sent by the player, let's implement the event delegate method mentioned above:
