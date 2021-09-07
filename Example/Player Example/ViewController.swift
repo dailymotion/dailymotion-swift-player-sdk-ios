@@ -59,6 +59,15 @@ class ViewController: UIViewController {
     playerViewController.load(videoId: "x4r5udv")
   }
 
+  @IBAction private func startFrom30(_ sender: Any) {
+    let parameters = ["start": 30]
+    guard
+      let encoded = try? JSONEncoder().encode(parameters),
+      let params = String(data: encoded, encoding: .utf8)
+    else { return }
+
+    playerViewController.load(videoId: "x4r5udv", params: params)
+  }
 }
 
 extension ViewController: DMPlayerViewControllerDelegate {
