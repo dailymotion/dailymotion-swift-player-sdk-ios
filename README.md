@@ -174,6 +174,21 @@ private func updatePlayerSize() {
 
 See the `Example` directory for a working sample of all this in action.
 
+## OM SDK integration
+Open Measurement SDK from IAB is designed to facilitate third party viewability and verification measurement for ads served to web video and mobile app environments. See https://iabtechlab.com/standards/open-measurement-sdk/ for more details.
+
+We have integrated the SDK in our Dailymotion Player SDK and it does more or less everything out of the box:
+- Ad session management
+- Ad main signals (play, buffer_start, buffer_end, pause, resume, quartiles, click)
+- Device and Player volume management
+- ⚠️ Basic Player state handling. NORMAL or FULLSCREEN based on player fullscreen state.<br/><br/>
+It is **STRONGLY** recommended to update at all time the player state if your app has more player layout variety, such as mini-player, picture-in-picture, etc...<br/>
+To do it, simply update the `playerState` property in your `DMPlayerViewController` instance: 
+```swift
+    player.playerState = .fullscreen
+```
+![image](https://user-images.githubusercontent.com/6400030/125312203-5ba0c700-e334-11eb-979f-6dd7e5d924ad.png)
+
 ## CMP Compliance
 Starting version 3.8.0, the SDK is fully compatible with third-party CMP (Consent Management Platform). Check https://iabeurope.eu/cmp-list/ for more details.
 
