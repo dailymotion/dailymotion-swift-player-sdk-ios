@@ -77,6 +77,7 @@ open class DMPlayerViewController: UIViewController {
 
   /// OM SDK
   private static let omidPartnerName = "Dailymotion"
+  private static let omidPartnerVersion = "6.7.5"
   private static var omidScriptUrl: URL? = DailymotionSDK.resourceBundle?.url(forResource: "omsdk-v1", withExtension: "js")
 
   private var allowOMSDK = false
@@ -335,7 +336,11 @@ open class DMPlayerViewController: UIViewController {
   }
 
   private func getEmbedderProperties() -> String? {
-    let capabilities = ["omsdk": OMIDDailymotionSDK.versionString()]
+    let capabilities = [
+      "omsdk": OMIDDailymotionSDK.versionString(),
+      "ompartner": DMPlayerViewController.omidPartnerName,
+      "omversion": DMPlayerViewController.omidPartnerVersion
+    ]
     let embedderProperties = EmbedderProperties(version: DMPlayerViewController.version, capabilities: capabilities)
     guard let encodedData = try? JSONEncoder().encode(embedderProperties) else { return nil }
     return String(data: encodedData, encoding: .utf8)
