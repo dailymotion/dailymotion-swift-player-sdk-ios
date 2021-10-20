@@ -11,6 +11,57 @@ public enum PlayerEvent {
   case errorEvent(error: PlayerError)
 }
 
+struct WebPlayerEvent {
+  static let videoStart = "video_start"
+  static let playing = "playing"
+  static let end = "end"
+  static let pause = "pause"
+  static let seeking = "seeking"
+  static let timeUpdate = "timeupdate"
+  static let durationChange = "durationchange"
+  static let volumeChange = "volumechange"
+  static let adLoaded = "ad_loaded"
+  static let adStart = "ad_start"
+  static let adEnd = "ad_end"
+  static let adBufferStart = "ad_bufferStart"
+  static let adBufferEnd = "ad_bufferEnd"
+  static let adPlay = "ad_play"
+  static let adPause = "ad_pause"
+  static let adResume = "ad_resume"
+  static let adTimeUpdate = "ad_timeupdate"
+  static let adClick = "ad_click"
+  static let presentationModeChange = "presentationmodechange"
+  static let fullscreenChange = "fullscreenchange"
+  static let fullscreenToggleRequested = "fullscreen_toggle_requested"
+  static let menuDidShow = "menu_did_show"
+  static let menuDidHide = "menu_did_hide"
+  static let likeRequested = "like_requested"
+  static let likeChanged = "notifyLikeChanged"
+  static let watchlaterRequested = "watch_later_requested"
+  static let watchLaterChanged = "notifyWatchLaterChanged"
+  static let addToCollectionRequested = "add_to_collection_requested"
+  static let shareRequested = "share_requested"
+  static let error = "error"
+  static let apiReady = "apiready"
+}
+
+struct WebPlayerParam {
+  static let state = "state"
+  static let mode = "mode"
+  static let muted = "muted"
+  static let url = "url"
+  static let code = "code"
+  static let pip = "picture-in-picture"
+  static let inline = "inline"
+  static let fullscreen = "fullscreen"
+}
+
+struct VerificationScriptInfo {
+  var url: String?
+  var vendorKey: String?
+  var parameters: String?
+}
+
 public struct PlayerError: Error {
   public let title: String
   public let code: String
