@@ -19,7 +19,21 @@ public protocol DMPlayerViewControllerDelegate: AnyObject {
 
 private struct EmbedderProperties: Codable {
   let version: String
-  let capabilities: [String: String]
+  let capabilities: Capabilities
+}
+
+private struct Capabilities: Codable {
+  let omsdk: String
+  let ompartner: String
+  let omversion: String
+  let tracking: Tracking
+}
+
+private struct Tracking: Codable {
+  let atts: UInt?
+  let deviceID: String?
+  let trackingAllowed: Bool?
+  let limitAdTracking: Bool?
 }
 
 private enum OMSDKError: Error {
@@ -67,7 +81,6 @@ open class DMPlayerViewController: UIViewController {
   
   private var webView: WKWebView!
   private var baseUrl: URL!
-  private var deviceIdentifier: String?
   private var loggerEnabled: Bool = false
   fileprivate var isInitialized = false
   fileprivate var videoIdToLoad: String?
@@ -88,6 +101,7 @@ open class DMPlayerViewController: UIViewController {
   private var adDuration: TimeInterval = 0.0
   private var omidSession: OMIDDailymotionAdSession?
   private var isAdPaused = false
+  private var allowIDFA = true
 
   override open var shouldAutorotate: Bool {
     return true
@@ -127,10 +141,7 @@ open class DMPlayerViewController: UIViewController {
         allowOMSDK = false
       }
     }
-
-    if allowIDFA {
-      deviceIdentifier = advertisingIdentifier()
-    }
+    self.allowIDFA = allowIDFA
     if parameters.contains(where: { $0.key == DMPlayerViewController.loggerParameterKey }) {
       loggerEnabled = true
     }
@@ -336,11 +347,7 @@ open class DMPlayerViewController: UIViewController {
   }
 
   private func getEmbedderProperties() -> String? {
-    let capabilities = [
-      "omsdk": OMIDDailymotionSDK.versionString(),
-      "ompartner": DMPlayerViewController.omidPartnerName,
-      "omversion": DMPlayerViewController.omidPartnerVersion
-    ]
+    let capabilities = Capabilities(omsdk: OMIDDailymotionSDK.versionString(), ompartner: DMPlayerViewController.omidPartnerName, omversion: DMPlayerViewController.omidPartnerVersion, tracking: constructTracking())
     let embedderProperties = EmbedderProperties(version: DMPlayerViewController.version, capabilities: capabilities)
     guard let encodedData = try? JSONEncoder().encode(embedderProperties) else { return nil }
     return String(data: encodedData, encoding: .utf8)
@@ -369,11 +376,6 @@ open class DMPlayerViewController: UIViewController {
     
     let parameterItems = parameters.map { return URLQueryItem(name: $0, value: String(describing: $1)) }
     items.append(contentsOf: parameterItems)
-    
-    if let deviceIdentifier = deviceIdentifier {
-      items.append(URLQueryItem(name: "ads_device_id", value: deviceIdentifier))
-      items.append(URLQueryItem(name: "ads_device_tracking", value: true.description))
-    }
     
     components.queryItems = items
     let url = components.url!
@@ -514,23 +516,19 @@ extension DMPlayerViewController: WKUIDelegate {
 
 extension DMPlayerViewController {
   
-  fileprivate func advertisingIdentifier() -> String? {
-    let canTrack: Bool
-    if #available(iOS 14, *) {
-      canTrack =  ATTrackingManager.trackingAuthorizationStatus ==  ATTrackingManager.AuthorizationStatus.authorized
-    } else {
-      canTrack = ASIdentifierManager.shared().isAdvertisingTrackingEnabled
-    }
-
-    if canTrack {
+  fileprivate func constructTracking() -> Tracking {
+    if allowIDFA {
       let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
-      #if swift(>=4.0)
-      return advertisingIdentifier.uuidString
-      #else
-      return advertisingIdentifier?.uuidString
-      #endif
+      if #available(iOS 14, *) {
+        let tracking = Tracking(atts: ATTrackingManager.trackingAuthorizationStatus.rawValue, deviceID: advertisingIdentifier.uuidString, trackingAllowed: true, limitAdTracking: nil)
+        return tracking
+      } else {
+        let tracking = Tracking(atts: nil, deviceID: advertisingIdentifier.uuidString, trackingAllowed: true, limitAdTracking: ASIdentifierManager.shared().isAdvertisingTrackingEnabled)
+        return tracking
+      }
     } else {
-      return nil
+      let tracking = Tracking(atts: nil, deviceID: "", trackingAllowed: false, limitAdTracking: nil)
+      return tracking
     }
   }
 
