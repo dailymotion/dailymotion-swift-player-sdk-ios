@@ -7,6 +7,7 @@ import AppTrackingTransparency
 import OMSDK_Dailymotion
 import UIKit
 import WebKit
+import AVKit
 
 public protocol DMPlayerViewControllerDelegate: AnyObject {
   
@@ -81,6 +82,7 @@ open class DMPlayerViewController: UIViewController {
   private static var omidScriptUrl: URL? = DailymotionSDK.resourceBundle?.url(forResource: "omsdk-v1", withExtension: "js")
 
   private var allowOMSDK = false
+  private var allowAudioSessionActive = false
   private var omidAdEvents: OMIDDailymotionAdEvents?
   private var omidMediaEvents: OMIDDailymotionMediaEvents?
   private var currentQuartile: Quartile = .Init
@@ -110,11 +112,14 @@ open class DMPlayerViewController: UIViewController {
   ///   - accessToken: An optional oauth token. If provided it will be passed as Bearer token to the player.
   ///   - cookies:     An optional array of HTTPCookie values that are passed to the player.
   ///   - allowIDFA:   Allow IDFA Collection. Defaults true
-  ///   - allowPiP: Allow Picture in Picture on iPad. Defaults true
+  ///   - allowPiP:    Allow Picture in Picture on iPad. Defaults true
+  ///   - allowAudioSessionActive: In order to control the view-ability of the Ads, OMID SDK needs AVAudioSession sharedInstance of app to be set to .mixWithOthers options and Active. Disabling this will affect Ads monetisation of your app.
   public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil,
-              cookies: [HTTPCookie]? = nil, allowIDFA: Bool = true, allowPiP: Bool = true) {
+              cookies: [HTTPCookie]? = nil, allowIDFA: Bool = true, allowPiP: Bool = true, allowAudioSessionActive: Bool = true) {
     super.init(nibName: nil, bundle: nil)
-
+    
+    self.allowAudioSessionActive = allowAudioSessionActive
+    
     if OMIDDailymotionSDK.shared.isActive {
       allowOMSDK = true
     } else {
@@ -127,10 +132,14 @@ open class DMPlayerViewController: UIViewController {
         allowOMSDK = false
       }
     }
-
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterInForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    setAudioSession()
+    
     if allowIDFA {
       deviceIdentifier = advertisingIdentifier()
     }
+    
     if parameters.contains(where: { $0.key == DMPlayerViewController.loggerParameterKey }) {
       loggerEnabled = true
     }
@@ -142,6 +151,10 @@ open class DMPlayerViewController: UIViewController {
     }
 
     self.loadWebView(parameters: parameters, baseUrl: baseUrl, accessToken: accessToken, cookies: cookiesToLoad, allowPiP: allowPiP)
+  }
+
+  @objc private func willEnterInForeground(notification: NSNotification) {
+    setAudioSession()
   }
   
   private func newWebView(cookies: [HTTPCookie]?, allowPiP: Bool = true) -> WKWebView {
@@ -167,7 +180,18 @@ open class DMPlayerViewController: UIViewController {
     webView.navigationDelegate = self
   }
   
+  //We need this since sometimes the system sets the AVAudioSession to inactive when the app enter in background.
+  private func setAudioSession() {
+    if (allowAudioSessionActive && allowOMSDK) {
+      if #available(iOS 10.0, *) {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
+        try? AVAudioSession.sharedInstance().setActive(true)
+      }
+    }
+  }
+  
   deinit {
+    NotificationCenter.default.removeObserver(self)
     pause()
     webView.stopLoading()
     webView.configuration.userContentController.removeScriptMessageHandler(forName: DMPlayerViewController.messageHandlerEvent)
