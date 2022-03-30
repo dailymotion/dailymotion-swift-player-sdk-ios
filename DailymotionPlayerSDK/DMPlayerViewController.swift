@@ -70,7 +70,7 @@ final class DailymotionSDK {
 open class DMPlayerViewController: UIViewController {
   
   private static let defaultUrl = URL(string: "https://www.dailymotion.com")!
-  private static let version = "4.0.0"
+  private static let version = "4.0.1"
   private static let eventName = "dmevent"
   private static let pathPrefix = "/embed/"
   private static let messageHandlerEvent = "triggerEvent"
