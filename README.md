@@ -22,7 +22,7 @@ The preferred way is via [CocoaPods](http://cocoapods.org). To install, add the 
 ```ruby
 use_frameworks!
 
-pod 'DailymotionPlayerSDK`
+pod 'DailymotionPlayerSDK'
 ```
 
 ## User Privacy and Data Use
