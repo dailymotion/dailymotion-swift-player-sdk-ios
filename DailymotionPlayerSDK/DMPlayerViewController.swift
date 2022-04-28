@@ -147,10 +147,6 @@ open class DMPlayerViewController: UIViewController {
       }
     }
     
-    if allowIDFA {
-      deviceIdentifier = advertisingIdentifier()
-    }
-    
     self.allowIDFA = allowIDFA
     
     NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterInForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
