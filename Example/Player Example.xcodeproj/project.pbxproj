@@ -188,7 +188,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Player Example/Pods-Player Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/DailymotionPlayerSDK/DailymotionPlayerSDK.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OMSDK_Dailymotion/OMSDK_Dailymotion.framework/OMSDK_Dailymotion",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/DailymotionPlayerSDK/OMSDK_Dailymotion.framework/OMSDK_Dailymotion",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
