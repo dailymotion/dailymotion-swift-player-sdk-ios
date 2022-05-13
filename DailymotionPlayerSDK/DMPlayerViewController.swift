@@ -52,19 +52,23 @@ private enum Quartile {
 
 final class DailymotionSDK {
   static let resourceBundle: Bundle? = {
+#if SWIFT_PACKAGE
+    return Bundle.module
+#else
     let myBundle = Bundle(for: DailymotionSDK.self)
-
+    
     guard let resourceBundleURL = myBundle.url(forResource: "DailymotionPlayerSDK", withExtension: "bundle") else {
       assertionFailure("DailymotionPlayerSDK.bundle required for OM SDK not found")
       return nil
     }
-
+    
     guard let resourceBundle = Bundle(url: resourceBundleURL) else {
       assertionFailure("Cannot access DailymotionPlayerSDK.bundle required for OM SDK")
       return nil
     }
-
+    
     return resourceBundle
+#endif
   }()
 }
 

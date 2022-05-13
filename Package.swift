@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -10,7 +10,13 @@ let package = Package(
     targets: [
         .target(
             name: "DailymotionPlayerSDK",
-            path: "DailymotionPlayerSDK"
-        )
+            dependencies: ["OMSDK_Dailymotion"],
+            path: "DailymotionPlayerSDK",
+            exclude:["Info.plist"],
+            resources: [
+              .process("omsdk-v1.js")
+            ]
+        ),
+        .binaryTarget(name: "OMSDK_Dailymotion", path: "OMSDK_Dailymotion.xcframework")
     ]
 )
