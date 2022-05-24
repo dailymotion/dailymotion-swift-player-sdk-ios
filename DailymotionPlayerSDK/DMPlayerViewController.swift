@@ -241,19 +241,8 @@ open class DMPlayerViewController: UIViewController {
       return
     }
 
-    
-    // x5xvext
-    // x80wxwd
     let js = self.buildLoadString(videoId: videoId, params: params)
-//    let js = self.buildLoadString(videoId: "x5xvext", params: params)
-
-    if let consentCookie = buildConsentCookie() {
-      setCookie(consentCookie) {
-        self.webView.evaluateJavaScript(js) { _, _ in
-          completion?()
-        }
-      }
-    } else {
+    setCookies {
       self.webView.evaluateJavaScript(js) { _, _ in
         completion?()
       }
@@ -559,6 +548,23 @@ extension DMPlayerViewController {
       let tracking = Tracking(atts: nil, deviceID: "", trackingAllowed: false, limitAdTracking: nil)
       return tracking
     }
+  }
+
+  private func setCookies(completion: (() -> ())? = nil) {
+    if #available(iOS 11.0, *) {
+      let cookies =  [
+        buildAccessTokenCookie(),
+        buildConsentCookie()
+      ].compactMap { $0 }
+      for cookie in cookies {
+        webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+      }
+    }
+    completion?()
+  }
+
+  private func buildAccessTokenCookie() -> HTTPCookie? {
+    return HTTPCookieStorage.shared.cookies?.first(where: { $0.name == "access_token" })
   }
 
   private func buildConsentCookie() -> HTTPCookie? {
