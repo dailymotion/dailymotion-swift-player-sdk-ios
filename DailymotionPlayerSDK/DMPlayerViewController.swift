@@ -18,6 +18,19 @@ public protocol DMPlayerViewControllerDelegate: AnyObject {
   
 }
 
+public struct OMIDFriendlyObstruction {
+  
+  public weak var view: UIView?
+  public var obstructionType: OMIDFriendlyObstructionType
+  public var reason: String?
+  
+  public init(view: UIView, obstructionType: OMIDFriendlyObstructionType, reason: String? = nil) {
+    self.view = view
+    self.obstructionType = obstructionType
+    self.reason = reason
+  }
+}
+
 private struct EmbedderProperties: Codable {
   let version: String
   let capabilities: Capabilities
@@ -92,7 +105,6 @@ open class DMPlayerViewController: UIViewController {
   fileprivate var paramsToLoad: String?
   
   open weak var delegate: DMPlayerViewControllerDelegate?
-
   /// OM SDK
   private static let omidPartnerName = "Dailymotion"
   private static let omidPartnerVersion = "6.7.5"
@@ -108,7 +120,8 @@ open class DMPlayerViewController: UIViewController {
   private var omidSession: OMIDDailymotionAdSession?
   private var isAdPaused = false
   private var allowIDFA = true
-
+  private var omidFriendlyObstructions: [OMIDFriendlyObstruction] = []
+  
   override open var shouldAutorotate: Bool {
     return true
   }
@@ -133,8 +146,11 @@ open class DMPlayerViewController: UIViewController {
   ///   - allowPiP:    Allow Picture in Picture on iPad. Defaults true
   ///   - allowAudioSessionActive: In order to control the view-ability of the Ads, OMID SDK needs AVAudioSession sharedInstance of app to be set to .mixWithOthers options and Active. Disabling this will affect Ads monetisation of your app.
   public init(parameters: [String: Any], baseUrl: URL? = nil, accessToken: String? = nil,
-              cookies: [HTTPCookie]? = nil, allowIDFA: Bool = true, allowPiP: Bool = true, allowAudioSessionActive: Bool = true) {
+              cookies: [HTTPCookie]? = nil, allowIDFA: Bool = true, allowPiP: Bool = true, allowAudioSessionActive: Bool = true, omidFriendlyObstructions: [OMIDFriendlyObstruction]? = nil) {
     super.init(nibName: nil, bundle: nil)
+    if let omidFriendlyObstructions = omidFriendlyObstructions {
+      self.omidFriendlyObstructions = omidFriendlyObstructions
+    }
     
     self.allowAudioSessionActive = allowAudioSessionActive
     
@@ -194,6 +210,32 @@ open class DMPlayerViewController: UIViewController {
     let request = newRequest(parameters: parameters, accessToken: accessToken, cookies: cookies)
     webView.load(request)
     webView.navigationDelegate = self
+  }
+  
+  public func addOMIDFriendlyObstructions(omidFriendlyObstructions: [OMIDFriendlyObstruction]) {
+    self.omidFriendlyObstructions.append(contentsOf: omidFriendlyObstructions)
+    guard let omidSession = omidSession else {
+      return
+    }
+    
+    do {
+      try addFriendlyObstructions(toOmidSession: omidSession, omidFriendlyObstructions)
+    } catch {
+      print("Error adding OMID Friendly Obstructions: \(error)")
+    }
+    
+  }
+  
+  public func removeOMIDFriendlyObstructions(omidFriendlyObstructions: [UIView]) {
+    var currentObstructionList = self.omidFriendlyObstructions
+    for obstruction in omidFriendlyObstructions {
+      currentObstructionList = self.omidFriendlyObstructions.filter { $0.view != obstruction }
+      guard let omidSession = omidSession else {
+        return
+      }
+      removeFriendlyObstructions(fromOmidSession: omidSession, obstruction)
+    }
+    self.omidFriendlyObstructions = currentObstructionList
   }
   
   //We need this since sometimes the system sets the AVAudioSession to inactive when the app enter in background.
@@ -739,9 +781,25 @@ private extension DMPlayerViewController {
       omidSession.mainAdView = webView
       omidAdEvents = try OMIDDailymotionAdEvents(adSession: omidSession)
       omidMediaEvents = try OMIDDailymotionMediaEvents(adSession: omidSession)
+      try addFriendlyObstructions(toOmidSession: omidSession, omidFriendlyObstructions)
+      
       self.omidSession = omidSession
     } catch let error {
       print(error.localizedDescription)
+    }
+  }
+  
+  func removeFriendlyObstructions(fromOmidSession omidSession:OMIDDailymotionAdSession,_ friendlyObstruction: UIView) {
+    
+    omidSession.removeFriendlyObstruction(friendlyObstruction)
+  }
+  
+  func addFriendlyObstructions(toOmidSession omidSession:OMIDDailymotionAdSession,_ omidFriendlyObstructions: [OMIDFriendlyObstruction]) throws {
+    
+    for friendlyObstruction in omidFriendlyObstructions {
+      if let view = friendlyObstruction.view {
+        try omidSession.addFriendlyObstruction(view, purpose: friendlyObstruction.obstructionType, detailedReason: friendlyObstruction.reason)
+      }
     }
   }
 
