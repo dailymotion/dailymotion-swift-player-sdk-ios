@@ -371,6 +371,9 @@ open class DMPlayerViewController: UIViewController {
       configuration.mediaPlaybackAllowsAirPlay = true
     }
     configuration.preferences = newPreferences()
+    if #available(iOS 13.0, *) {
+      configuration.defaultWebpagePreferences = newWebpagePreferences()
+    }
     configuration.userContentController = newContentController(cookies: cookies)
     return configuration
   }
@@ -378,6 +381,13 @@ open class DMPlayerViewController: UIViewController {
   private func newPreferences() -> WKPreferences {
     let preferences = WKPreferences()
     preferences.javaScriptCanOpenWindowsAutomatically = true
+    return preferences
+  }
+
+  @available(iOS 13.0, *)
+  private func newWebpagePreferences() -> WKWebpagePreferences {
+    let preferences = WKWebpagePreferences.init()
+    preferences.preferredContentMode = .mobile
     return preferences
   }
   
