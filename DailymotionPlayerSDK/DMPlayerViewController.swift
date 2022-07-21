@@ -601,7 +601,7 @@ extension DMPlayerViewController {
     if allowIDFA {
       let advertisingIdentifier = ASIdentifierManager.shared().advertisingIdentifier
       if #available(iOS 14, *) {
-        let tracking = Tracking(atts: ATTrackingManager.trackingAuthorizationStatus.rawValue, deviceID: advertisingIdentifier.uuidString, trackingAllowed: true, limitAdTracking: nil)
+        let tracking = Tracking(atts: ATTrackingManager.trackingAuthorizationStatus.rawValue, deviceID: advertisingIdentifier.uuidString, trackingAllowed: true, limitAdTracking: (ATTrackingManager.trackingAuthorizationStatus != .authorized))
         return tracking
       } else {
         let tracking = Tracking(atts: nil, deviceID: advertisingIdentifier.uuidString, trackingAllowed: true, limitAdTracking: ASIdentifierManager.shared().isAdvertisingTrackingEnabled)
