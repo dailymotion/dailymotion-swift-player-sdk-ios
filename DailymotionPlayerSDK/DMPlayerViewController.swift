@@ -40,7 +40,10 @@ private struct Capabilities: Codable {
   let omsdk: String
   let ompartner: String
   let omversion: String
-  let tracking: Tracking
+  let atts: UInt?
+  let deviceId: String?
+  let trackingAllowed: Bool?
+  let limitAdTracking: Bool?
 }
 
 private struct Tracking: Codable {
@@ -428,7 +431,8 @@ open class DMPlayerViewController: UIViewController {
   }
 
   private func getEmbedderProperties() -> String? {
-    let capabilities = Capabilities(omsdk: OMIDDailymotionSDK.versionString(), ompartner: DMPlayerViewController.omidPartnerName, omversion: DMPlayerViewController.omidPartnerVersion, tracking: constructTracking())
+    let tracking = constructTracking()
+    let capabilities = Capabilities(omsdk: OMIDDailymotionSDK.versionString(), ompartner: DMPlayerViewController.omidPartnerName, omversion: DMPlayerViewController.omidPartnerVersion, atts: tracking.atts, deviceId: tracking.deviceID, trackingAllowed: tracking.trackingAllowed, limitAdTracking: tracking.limitAdTracking)
     let embedderProperties = EmbedderProperties(version: DMPlayerViewController.version, capabilities: capabilities)
     guard let encodedData = try? JSONEncoder().encode(embedderProperties) else { return nil }
     return String(data: encodedData, encoding: .utf8)
