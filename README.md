@@ -1,3 +1,9 @@
+[!WARNING] 
+We no longer support this SDK for Player integration on iOS environments. 
+Please use the new iOS SDK documented [here](https://developers.dailymotion.com/guides/getting-started-with-ios-sdk/).
+
+
+
 # Dailymotion Swift Player SDK for iOS
 
 [![Build Status](https://www.bitrise.io/app/61743b2a9a9a22b7/status.svg?token=N-WhdHZx9J3uFo8ZCqsXNw&branch=develop)](https://www.bitrise.io/app/61743b2a9a9a22b7)
